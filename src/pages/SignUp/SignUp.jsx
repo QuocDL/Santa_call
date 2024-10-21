@@ -1,38 +1,39 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { deviceDetect } from "react-device-detect";
-import { toast } from "react-toastify";
 import axios from "axios";
 import NProgress from "nprogress";
-
+import { useEffect, useState } from "react";
+import { deviceDetect } from "react-device-detect";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import UserIcon from "../../assets/UserIcon.png";
+import MailIocon from "../../assets/MailIcon.png";
+import LockIcon from "../../assets/LockIcon.png";
+import BgAuth from "../../assets/nen2-100.png";
 import { signUp } from "../../services/auth.service";
-import SantaClaus from "../../assets/santa-claus.png";
 import GoogleLogo from "../../assets/LogoGoogle.svg";
-import BgAuth from "../../assets/bg-auth.png";
-import EyeIcon from "../../assets/EyeIcon.svg";
-
+import AvatarIcon from "../../assets/AvatarChooseIcon.png";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "../../Validator/AuthValidate";
 function SignUp() {
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [cfPassword, setCfPassword] = useState("");
   const [ipAddress, setIpAddress] = useState(null);
   const [deviceRegister, setDeviceRegister] = useState(null);
   const [imageSrc, setImageSrc] = useState(null);
   const [imageName, setImageName] = useState("");
-  const [isShowPassword, setIsShowPassword] = useState(false);
-  const [isShowCfPassword, setIsShowCfPassword] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    NProgress.start();
-
-    fetchIpAddress();
-    fetchDeviceDetect();
-
-    NProgress.done();
-  }, []);
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      user_name: "",
+      password: "",
+      email: "",
+      confirmPassword: "",
+      acp: false,
+    },
+  });
   const fetchIpAddress = async () => {
     const res = await axios.get("https://api.ipify.org", {
       params: {
@@ -50,7 +51,12 @@ function SignUp() {
       setDeviceRegister("Desktop");
     }
   };
-
+  useEffect(() => {
+    NProgress.start();
+    fetchIpAddress();
+    fetchDeviceDetect();
+    NProgress.done();
+  }, []);
   const uploadImg = async () => {
     try {
       const formData = new FormData();
@@ -75,50 +81,19 @@ function SignUp() {
     setImageName(e.target.files[0].name);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!userName) {
-      toast.warn("User name is required");
-      return;
-    } else if (!email) {
-      toast.warn("Email is required");
-      return;
-    } else if (!password) {
-      toast.warn("Password is required");
-      return;
-    } else if (password.length < 6) {
-      toast.warn("Password must have at least 6 characters");
-      return;
-    } else if (password.length > 32) {
-      toast.warn("Password can not more than 32 characters");
-      return;
-    } else if (!cfPassword) {
-    toast.warn("Password is required");
-    return;
-    } else if (cfPassword.length < 6) {
-    toast.warn("Password must have at least 6 characters");
-    return;
-    } else if (cfPassword.length > 32) {
-    toast.warn("Password can not more than 32 characters");
-    return;
-    } else if (cfPassword != password) {
-      toast.warn("Confirm password no match!");
-      return;
-    } else if (!imageSrc) {
+  const submitData = async (data) => {
+    if (!imageSrc) {
       toast.warn("Image is required");
       return;
     }
-
     const formData = new FormData();
     await uploadImg();
-    formData.append("user_name", userName);
-    formData.append("email", email);
-    formData.append("password", password);
+    formData.append("user_name", data.user_name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
     formData.append("ip_register", ipAddress);
     formData.append("device_register", deviceRegister);
     formData.append("link_avatar", `https://i.ibb.co/vjVvZL5/${imageName}`);
-
     try {
       NProgress.start();
       const response = await signUp(formData);
@@ -138,12 +113,6 @@ function SignUp() {
     }
   };
 
-  const handleShowPassword = () => {
-    setIsShowPassword(!isShowPassword);
-  };
-  const handleShowCfPassword = () => {
-    setIsShowCfPassword(!isShowCfPassword);
-  };
   return (
     <div className="flex min-h-screen justify-center sm:relative">
       <img
@@ -154,158 +123,160 @@ function SignUp() {
       />
       <div className="relative flex items-center max-md:flex-col">
         <div>
-          <img loading="lazy" srcSet={SantaClaus} alt="" />
-        </div>
-        <div>
           <div className="flex flex-col p-5 bg-white rounded-xl">
-            <div className="text-3xl font-semibold text-gray-900">
-              Get’s started.
-            </div>
-            <div className="mt-4 text-lg font-medium">
-              <span className="text-gray-500 ">
-                Already have an account? &nbsp;
-              </span>
-              <Link to={"/signin"} className="font-medium text-lime-800">
-                Sign in
-              </Link>
-            </div>
-           
+            <h1 className="text-2xl text-[#CF3736] text-center font-semibold mt-2">
+              Sign Up
+            </h1>
 
-            <div className="flex gap-3.5 mt-6 max-md:justify-center">
-              <div className="bg-gray-200 flex lg:w-[230px] h-px my-auto" />
-              <div className="text-lg text-gray-500"></div>
-              <div className="bg-gray-200 flex lg:w-[230px] h-px my-auto" />
-            </div>
-
-            <form onSubmit={handleSubmit}>
-              <div className="mx-5 mt-6 max-md:mx-2.5">
-                <label className="mb-2 text-base font-medium text-gray-900">
-                  User Name
-                </label>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="User Name"
-                  className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 border border-gray-400 border-solid rounded-xl"
-                />
-              </div>
-
-              <div className="mx-5 mt-6 max-md:mx-2.5">
-                <label className="mb-2 text-base font-medium text-gray-900">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email@gmail.com"
-                  className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 border border-gray-400 border-solid rounded-xl"
-                />
-              </div>
-
-              <div className="mx-5 mt-6 max-md:mx-2.5">
-                <label className="mb-2 text-base font-medium text-gray-900">
-                  Password
-                </label>
-                <div className="relative">
-                  {isShowPassword == false ? (
-                    <>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="**********"
-                        className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 border border-gray-400 border-solid rounded-xl"
-                      />
-                      <img
-                        loading="lazy"
-                        src={EyeIcon}
-                        className="absolute translate-y-1/2 right-4 bottom-1/2"
-                        alt=""
-                        onClick={() => handleShowPassword()}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <input
-                        type="text"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="**********"
-                        className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 border border-gray-400 border-solid rounded-xl"
-                      />
-                      <img
-                        loading="lazy"
-                        src={EyeIcon}
-                        className="absolute translate-y-1/2 right-4 bottom-1/2"
-                        alt=""
-                        onClick={() => handleShowPassword()}
-                      />
-                    </>
+            <form
+              onSubmit={handleSubmit(submitData)}
+              className="xl:w-[25vw] mt-6"
+            >
+              <div className="mx-4 mt-6 max-md:mx-2.5">
+                <div className="flex rounded-lg  border border-gray-400 border-solid overflow-hidden">
+                  <div className="bg-[#000000] px-2 flex items-center">
+                    <img src={UserIcon} alt="" />
+                  </div>
+                  <input
+                    type="text"
+                    {...register("user_name")}
+                    placeholder="UserName"
+                    className=" py-4 pl-5 pr-5 w-full text-base font-light text-gray-500 outline-none"
+                  />
+                </div>
+                <div className="h-[18px] mt-2">
+                  {errors.user_name && (
+                    <p className="text-red-500 text-xs">
+                      {errors.user_name.message}
+                    </p>
                   )}
                 </div>
               </div>
-              <div className="mx-5 mt-6 max-md:mx-2.5">
-                <label className="mb-2 text-base font-medium text-gray-900">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  {isShowCfPassword == false ? (
-                    <>
-                      <input
-                        type="password"
-                        value={cfPassword}
-                        onChange={(e) => setCfPassword(e.target.value)}
-                        placeholder="**********"
-                        className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 border border-gray-400 border-solid rounded-xl"
-                      />
-                      <img
-                        loading="lazy"
-                        src={EyeIcon}
-                        className="absolute translate-y-1/2 right-4 bottom-1/2"
-                        alt=""
-                        onClick={() => handleShowCfPassword()}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <input
-                        type="text"
-                        value={cfPassword}
-                        onChange={(e) => setCfPassword(e.target.value)}
-                        placeholder="**********"
-                        className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 border border-gray-400 border-solid rounded-xl"
-                      />
-                      <img
-                        loading="lazy"
-                        src={EyeIcon}
-                        className="absolute translate-y-1/2 right-4 bottom-1/2"
-                        alt=""
-                        onClick={() => handleShowCfPassword()}
-                      />
-                    </>
+
+              <div className="mx-4 mt-2 max-md:mx-2.5">
+                <div className="flex rounded-lg  border border-gray-400 border-solid overflow-hidden">
+                  <div className="bg-[#000000] px-2 flex items-center">
+                    <img src={MailIocon} alt="" />
+                  </div>
+                  <input
+                    {...register("email")}
+                    type="text"
+                    placeholder="Email@gmail.com"
+                    className=" py-4 pl-5 pr-5 w-full text-base font-light text-gray-500 outline-none"
+                  />
+                </div>
+                <div className="h-[18px] mt-2">
+                  {errors.email && (
+                    <p className="text-red-500 text-xs">
+                      {errors.email.message}
+                    </p>
                   )}
                 </div>
               </div>
-              <div className="mx-5 mt-6 max-md:mx-2.5">
-                <label className="mb-2 text-base font-medium text-gray-900">
-                  Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImage}
-                  className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 border border-gray-400 border-solid rounded-xl"
-                />
-              </div>
 
-              <div className="mx-5 max-md:mx-2.5">
+              <div className="mx-4 5 mt-2 max-md:mx-2.5">
+                <div className="flex rounded-lg  border border-gray-400 border-solid overflow-hidden">
+                  <div className="bg-[#000000] px-2 flex items-center">
+                    <img src={LockIcon} alt="" />
+                  </div>
+                  <input
+                    {...register("password")}
+                    type="password"
+                    placeholder="Password"
+                    className=" py-4 pl-5 pr-5 w-full text-base font-light text-gray-500 outline-none"
+                  />
+                </div>
+                <div className="h-[18px] mt-2">
+                  {errors.password && (
+                    <p className="text-red-500 text-xs">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="mx-4  mt-2 max-md:mx-2.5">
+                <div className="flex rounded-lg  border border-gray-400 border-solid overflow-hidden">
+                  <div className="bg-[#000000] px-2 flex items-center">
+                    <img src={LockIcon} alt="" />
+                  </div>
+                  <input
+                    {...register("confirmPassword")}
+                    type="text"
+                    placeholder="Confirm Password"
+                    className=" py-4 pl-5 pr-5 w-full text-base font-light text-gray-500 outline-none"
+                  />
+                </div>
+                <div className="h-[18px] mt-2">
+                  {errors.confirmPassword && (
+                    <p className="text-red-500 text-xs">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="mx-4  mt-2 max-md:mx-2.5">
+                <div className="flex rounded-lg  border border-gray-400 border-solid overflow-hidden">
+                  <div className="bg-[#000000] px-2 flex items-center">
+                    <img src={AvatarIcon} width={40} alt="" />
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImage}
+                    className="w-full py-4 pl-5 pr-12 text-base font-light text-gray-500 outline-none rounded-xl"
+                  />
+                </div>
+                <div className="h-[18px] mt-2">
+                  {errors.avatar && (
+                    <p className="text-red-500 text-xs">
+                      {errors.avatar.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="mx-4  mt-2 flex flex-wrap items-center  ">
+                <div className="flex justify-between gap-3.5">
+                  <input
+                    type="checkbox"
+                    {...register("acp")}
+                    className="rounded border-[color:var(--4,#B1B5C3)] flex w-4 h-4 my-auto"
+                  />
+                  <div className="text-base font-medium  text-gray-500">
+                    Accept terms and services
+                  </div>
+                </div>
+                <div className="h-[18px] ">
+                  {errors.acp && (
+                    <p className="text-red-500 text-xs">{errors.acp.message}</p>
+                  )}
+                </div>
+              </div>
+              <div className="mx-4 max-md:mx-2.5 mt-4">
                 <button
                   type="submit"
-                  className="text-rose-100 text-xl text-center font-semibold w-full bg-red-400 mt-[30px] px-16 py-5 rounded-xl"
+                  className="text-rose-100 text-xl text-center font-semibold w-full bg-red-400  px-16 py-5 rounded-xl"
                 >
                   Sign up
+                </button>
+                <p className="mt-2">
+                  You have an account?{" "}
+                  <Link className="text-[#CF3736]" to={"/signin"}>
+                    Sign In
+                  </Link>
+                </p>
+              </div>
+              <div className="mt-4 mx-4 flex flex-col lg:flex-row items-center justify-between gap-5">
+                <button className="px-2 w-full border-[#00403E] border-[1px] py-4 flex items-center gap-5 rounded-md">
+                  <img src={GoogleLogo} alt="" />
+                  <span className="text-sm  whitespace-nowrap">
+                    Sign in with Google
+                  </span>
+                </button>
+                <button className="px-2 w-full bg-[#4776D0] py-4 flex items-center gap-5 rounded-md">
+                  <img src={GoogleLogo} alt="" />
+                  <span className="text-sm whitespace-nowrap">
+                    Sign in with FaceBook
+                  </span>
                 </button>
               </div>
             </form>

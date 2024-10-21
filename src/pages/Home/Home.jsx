@@ -11,7 +11,8 @@ function Home() {
   const navigate = useNavigate();
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
-  const user = useSelector(state => state.user.account)
+  const user = useSelector((state) => state.user.account);
+  console.log(user);
   const breakpoints = {
     1024: {
       slidesPerView: 3,
@@ -48,7 +49,7 @@ function Home() {
   useEffect(() => {
     getSwapEvent();
   }, []);
-  
+
   return (
     <div>
       <div className="flex flex-col gap-[20px] mt-12 mb-5">
@@ -126,12 +127,8 @@ function Home() {
           >
             {videos.map((item, index) => (
               <SwiperSlide key={index} className="cursor-pointer">
-                <video
-                  type= "video/mp4"
-                  className="w-full h-full"
-                  controls
-                >
-                  <source src={item.sukien_video[0].link_vid_swap}/>
+                <video type="video/mp4" className="w-full h-full" controls>
+                  <source src={item.sukien_video[0].link_vid_swap} />
                 </video>
                 <div className="flex flex-col gap-1 px-4 py-2">
                   <span className="truncate text-sm uppercase font-extralight text-green-600">

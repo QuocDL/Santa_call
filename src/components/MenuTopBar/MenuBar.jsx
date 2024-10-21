@@ -1,14 +1,39 @@
-import SearchIcon from "../../assets/searchIcon.png";
+import {
+  Menu,
+  MenuHandler,
+  MenuItem,
+  MenuList,
+} from "@material-tailwind/react";
+import NProgress from "nprogress";
 import { useState } from "react";
-import MenuBarBlock from "../SideBar/_components/MenuIcon";
-import notificationIcon from "../../assets/NotificationIcon.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import coinIcon from "../../assets/image 2.png";
 import increaseIcon from "../../assets/increaseIcon.png";
+import notificationIcon from "../../assets/NotificationIcon.svg";
+import SearchIcon from "../../assets/searchIcon.png";
+import MenuBarBlock from "../SideBar/_components/MenuIcon";
+import { toast } from "react-toastify";
+import { doLogout } from "../../redux/action/userAction";
+import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+
 export default function MenuBar() {
   const [searchKey, setSearchKey] = useState("");
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const handleSearch = () => {
     console.log(searchKey);
+  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    NProgress.start();
+    try {
+      dispatch(doLogout());
+      navigate("/");
+    } catch (error) {
+      toast.error("Logout Fail");
+    }
+    NProgress.done();
   };
   let avatarUrl = useSelector((state) => state.user.account.link_avatar);
   if (avatarUrl == "") avatarUrl = "/blank-profile-picture.png";
@@ -45,12 +70,31 @@ export default function MenuBar() {
           />
         </div>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center sm:mr-16">
         <div className="user-img">
-          <img
-            src={avatarUrl}
-            className="cursor-pointer rounded-full overflow-hidden h-[40px] w-[40px] sm:h-[50px] sm:w-[50px]"
-          />
+          {isAuthenticated ? (
+            <Menu>
+              <MenuHandler>
+                <img
+                  src={avatarUrl}
+                  className="cursor-pointer rounded-full overflow-hidden h-[40px] w-[40px] sm:h-[50px] sm:w-[50px]"
+                />
+              </MenuHandler>
+              <MenuList className="flex flex-col gap-2 w-[150px]">
+                <MenuItem>
+                  <Link to={"/profile"}>Profile</Link>
+                </MenuItem>
+                <MenuItem>Setting</MenuItem>
+                <MenuItem>
+                  <button onClick={handleLogout}>Log out</button>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            <div className="text-white bg-[#00403EEB] py-1 px-2 rounded-md">
+              <Link to={"/signin"}>Sign In</Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
