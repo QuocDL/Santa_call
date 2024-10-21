@@ -10,7 +10,7 @@ function App() {
           <div className="w-0">
             <SideBar />
           </div>
-          <div className="w-[100%] mx-4 lg:ml-[6.5rem]">
+          <div className="w-[100%] mx-4 lg:ml-[6.5rem] overflow-hidden">
             <MenuBar/>
             <Outlet />
           </div>

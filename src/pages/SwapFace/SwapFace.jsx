@@ -122,14 +122,12 @@ function SwapFace() {
       if (!id) throw new Error("No ID provided");
   
       const response = await axios.get(
-        `https://api.funface.online/lovehistory/listimage/santa/${album_id}?category=1`
+        `https://api.funface.online/get/list_image/1?album=${album_id}`
       );
   
-      if (!response || !response.data?.data) {
-        throw new Error("Invalid response from API");
-      }
-  
-      const images = response.data.data;
+    
+      console.log(response)
+      const images = response.data.list_sukien_video;
   console.log('images',images);
   
     const baseImg = images.find(
@@ -145,7 +143,7 @@ function SwapFace() {
     } catch (error) {
       toast.error("Can't find album to swap");
       console.error("Error fetching base image:", error.message);
-      navigate("/swap-face");
+      // navigate("/swap-face");
     }
   };
 

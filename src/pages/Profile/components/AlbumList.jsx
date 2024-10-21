@@ -27,10 +27,10 @@ function AlbumList() {
   const getSwappedImgs = async () => {
     try {
       let response = await axios.get(
-        "https://thinkdiff.us/get/list_image/1?album=1"
+        "https://api.funface.online/get/list_2_image/id_image_swap_all_id_sk?id_user=580&id_sk=165209594364"
       );
       if (response) {
-        setImages(response.data?.list_sukien_video);
+        setImages(response.data?.id_su_kien_swap_image);
       } else {
         console.log("no response");
       }
@@ -53,7 +53,7 @@ function AlbumList() {
             onMouseLeave={() => setImageHover(null)}
           >
             <img
-              src={item.image}
+              src={item.link_da_swap}
               alt="Image template"
               loading="lazy"
               className="w-full h-full object-cover"

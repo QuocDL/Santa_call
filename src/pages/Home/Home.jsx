@@ -1,18 +1,13 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
+import Banner from "./_components/Banner";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { SwiperSlide ,Swiper} from "swiper/react";
+import { Link } from "react-router-dom";
 
-import { useSelector } from "react-redux";
-
-function Home() {
-  const navigate = useNavigate();
-  const [images, setImages] = useState([]);
-  const [videos, setVideos] = useState([]);
-  const user = useSelector((state) => state.user.account);
-  console.log(user);
+export default function Home() {
+  const [listImages, setImages] = useState(null)
   const breakpoints = {
     1024: {
       slidesPerView: 3,
@@ -27,128 +22,58 @@ function Home() {
       spaceBetween: 50,
     },
   };
+  const fetchImages = async()=>{
+    const randomAlbum = Math.floor(Math.random() * 23) + 1;
+    const {data} = await axios.get(`https://api.funface.online/get/list_image/1?album=${randomAlbum}`)
+    setImages(data.list_sukien_video)
+    console.log(listImages)
 
-  const getSwapEvent = async () => {
-    try {
-      const imagesResponse = await axios.get(
-        `https://api.funface.online/get/id_image/id_user?id_user=${user.id_user}`
-      );
-      const videosResponse = await axios.get(
-        "https://databaseswap.mangasocial.online/lovehistory/video/1"
-      );
-      if (imagesResponse && videosResponse) {
-        setImages(imagesResponse.data?.list_sukien[7].sukien);
-        setVideos(videosResponse.data?.list_sukien_video);
-      } else {
-        console.log("no response");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getSwapEvent();
-  }, []);
-
+  }
+  useEffect(()=>{
+    fetchImages()
+  },[])
   return (
-    <div>
-      <div className="flex flex-col gap-[20px] mt-12 mb-5">
-        <div className="image-swap">
-          <div className="flex flex-col mb-[10px]">
-            <span className="text-[22px] font-semibold text-red-400">
-              Images
-            </span>
-            <div className="flex justify-between text-green-600">
-              <span className="font-normal">Swap Image</span>
-              <span
-                className="cursor-pointer hover:underline"
-                onClick={() => navigate("/template")}
-              >
-                View...
-              </span>
-            </div>
-          </div>
-          <Swiper
-            slidesPerView={2}
+    <div className="mt-8">
+      <Banner/>
+      <div className="mt-8">
+        <div  className="flex items-center justify-between">
+         <div className="bg-[#00403E] flex items-center rounded-md shadow-xl  px-2 py-1.5 gap-5">
+          <h3 className=" shadow-2xl rounded-md text-[#CF3736]  text-xl font-bold ">Swap Image</h3>
+          <span className="text-[#CF3736]  text-2xl ">&gt;</span>
+         </div>
+        </div>
+        <div>
+        <Swiper
+          className="mt-6"
+            slidesPerView={1}
             spaceBetween={20}
             pagination={{
               clickable: true,
             }}
             breakpoints={breakpoints}
           >
-            {images.slice(-4).map((item, index) => {
+            {listImages?.map((item, index) => {
               return (
                 <SwiperSlide key={index} className="cursor-pointer">
-                  <img
-                    src={item.link_da_swap}
-                    alt="Image"
-                    className="h-[200px] object-cover"
-                  />
-                  <div className="flex flex-col gap-1 px-4 py-2">
-                    <span className="truncate text-sm uppercase font-extralight text-green-600">
-                      {item.ten_su_kien}
-                    </span>
-                    <span className="truncate text-base font-normal text-green-600">
-                      {item.noi_dung_su_kien}
-                    </span>
-                    <span className="text-xs font-extralight text-gray-400">
-                      18 images
-                    </span>
-                    <div className="absolute bottom-4 right-4 w-4 h-4 rounded-full bg-green-800"></div>
+                  <div className="relative ">
+                    <img
+                      src={item.image}
+                      alt="Image"
+                      className=" object-cover h-[250px]"
+                    />
+                   <div className="absolute bottom-0 px-2.5 py-1 bg-[#ffffff] w-full bg-opacity-75 text-[#00403E]">
+                    <h3 className="font-semibold text-lg">{item.thongtin}</h3>
+                    <span>More than 50 images</span>
+                    <span className="block">Download: 230</span>
+                   </div>
+                   <Link to={`/swap-face/${item.id}?album_id=${item.IDCategories}`} className="absolute bottom-6 right-6 bg-[#CF3736] text-white py-1 px-3 rounded-md font-medium">Use</Link>
                   </div>
                 </SwiperSlide>
               );
             })}
           </Swiper>
         </div>
-
-        <div className="video-swap">
-          <div className="flex flex-col mb-[10px]">
-            <span className="text-[22px] font-semibold text-red-400">
-              Videos
-            </span>
-            <div className="flex justify-between text-green-600">
-              <span className="font-normal">Swap Video</span>
-              <span
-                className="cursor-pointer hover:underline"
-                onClick={() => navigate("/template")}
-              >
-                View...
-              </span>
-            </div>
-          </div>
-          <Swiper
-            slidesPerView={2}
-            spaceBetween={20}
-            pagination={{
-              clickable: true,
-            }}
-            breakpoints={breakpoints}
-          >
-            {videos.map((item, index) => (
-              <SwiperSlide key={index} className="cursor-pointer">
-                <video type="video/mp4" className="w-full h-full" controls>
-                  <source src={item.sukien_video[0].link_vid_swap} />
-                </video>
-                <div className="flex flex-col gap-1 px-4 py-2">
-                  <span className="truncate text-sm uppercase font-extralight text-green-600">
-                    {item.sukien_video[0].ten_su_kien}
-                  </span>
-                  <span className="truncate text-base font-normal text-green-600">
-                    {item.sukien_video[0].noi_dung_su_kien}
-                  </span>
-                  <span className="truncate text-base font-normal text-green-600">
-                    {item.sukien_video[0].thoigian_taosk}
-                  </span>
-                  <div className="absolute bottom-4 right-4 w-4 h-4 rounded-full bg-green-800"></div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
       </div>
     </div>
   );
 }
-
-export default Home;

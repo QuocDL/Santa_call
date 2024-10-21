@@ -6,7 +6,6 @@ import NotFound from "./pages/NotFound/NotFound.jsx";
 import SignIn from "./pages/SignIn/SignIn.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword.jsx";
-import Home from "./pages/Home/Home.jsx";
 import Template from "./pages/Template/Template.jsx";
 import SwapFaceDetail from "./pages/SwapDetail/SwapFaceDetail.jsx";
 import SwapVideoDetail from "./pages/SwapDetail/SwapVideoDetail.jsx";
@@ -25,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "nprogress/nprogress.css";
 import "./index.css";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
+import Home from "./pages/Home/Home.jsx";
 
 NProgress.configure({
   showSpinner: false,
@@ -39,7 +39,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Routes>
             {/* Route home and others */}
             <Route path="/" element={<App />}>
-                <Route index element={<Home />} />
+                <Route index element={<Home/>} />
                 <Route path="/template" element={<Template />} />
                 <Route path="/swap-face" element={<PrivateRoute><SwapFaceDetail /></PrivateRoute>} />
                 <Route path="/swap-video" element={<PrivateRoute><SwapVideoDetail /></PrivateRoute>} />

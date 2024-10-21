@@ -70,7 +70,7 @@ export default function MenuBar() {
           />
         </div>
       </div>
-      <div className="flex items-center sm:mr-16">
+      <div className="flex items-center lg:mr-16">
         <div className="user-img">
           {isAuthenticated ? (
             <Menu>
@@ -80,7 +80,7 @@ export default function MenuBar() {
                   className="cursor-pointer rounded-full overflow-hidden h-[40px] w-[40px] sm:h-[50px] sm:w-[50px]"
                 />
               </MenuHandler>
-              <MenuList className="flex flex-col gap-2 w-[150px]">
+              <MenuList className="flex flex-col gap-2 w-[150px] z-50">
                 <MenuItem>
                   <Link to={"/profile"}>Profile</Link>
                 </MenuItem>
@@ -92,7 +92,9 @@ export default function MenuBar() {
             </Menu>
           ) : (
             <div className="text-white bg-[#00403EEB] py-1 px-2 rounded-md">
-              <Link to={"/signin"}>Sign In</Link>
+              <Link to={"/signin"} className="whitespace-nowrap">
+                Sign In
+              </Link>
             </div>
           )}
         </div>
