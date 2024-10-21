@@ -1,16 +1,16 @@
-import Notification from "./components/Notification/Notification";
 import { Outlet } from "react-router-dom";
+import Notification from "./components/Notification/Notification";
 import SideBar from "./components/SideBar/SideBar";
 
 function App() {
   return (
     <>
       <div className="max-w-screen min-h-screen bg-app  bg-cover">
-        <div className="flex justify-center lg:justify-start w-full gap-10 ">
-          <div className="hidden lg:block">
+        <div className="flex justify-center lg:justify-start w-full ">
+          <div className="w-0">
             <SideBar />
           </div>
-          <div className="w-[80vw] md:w-[70vw] lg:w-[65vw] ml-16 xl:w-[75vw]">
+          <div className="w-[100%] mx-4 lg:ml-[6.5rem]">
             <Outlet />
           </div>
           <Notification />

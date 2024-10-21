@@ -1,13 +1,14 @@
 import { useState } from "react";
 
-import MenuBarModal from "./MenuBarModal";
+import { useDispatch, useSelector } from "react-redux";
 import MenuBarIcon from "../../assets/MenuBarIcon.png";
 import MenuBarIconActive from "../../assets/MenuBarIconActive.png";
+import { setOpen } from "../../redux/slice/sideBarSlice";
 
 function MenuBar() {
-  const [openMenu, setOpenMenu] = useState(false);
   const [hovered, setHovered] = useState(false);
-
+  const isOpen = useSelector(state=> state.sideBar.isOpen)
+  const dispatch = useDispatch()
   return (
     <>
       <div
@@ -18,7 +19,7 @@ function MenuBar() {
         onMouseLeave={() => {
           setHovered(false);
         }}
-        onClick={() => setOpenMenu(true)}
+        onClick={() => dispatch(setOpen(!isOpen))}
       >
         <img
           src={hovered ? MenuBarIconActive : MenuBarIcon}
@@ -26,7 +27,6 @@ function MenuBar() {
           className="w-[24px] h-[24px]"
         />
       </div>
-      <MenuBarModal openMenu={openMenu} setOpenMenu={setOpenMenu} />
     </>
   );
 }
