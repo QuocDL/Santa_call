@@ -34,6 +34,7 @@ export default function Home() {
   },[])
   return (
     <div className="mt-8">
+      
       <Banner/>
       <div className="mt-8">
         <div  className="flex items-center justify-between">
