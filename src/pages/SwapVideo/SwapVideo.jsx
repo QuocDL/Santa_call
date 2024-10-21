@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import NProgress from "nprogress";
 import axios from "axios";
 
-import MenuBar from "../../components/MenuBar/MenuBar";
 import TransferIcon from "../../assets/TransferIcon.svg";
 import UploadImageIcon from "../../assets/UploadImageIcon.svg";
 import DirectLeftIcon from "../../assets/DirectLeftIcon.svg";
@@ -166,9 +165,7 @@ function SwapVideo() {
         accept="image/*"
         onChange={handleInputChange}
       />
-      <div className="searchBar flex items-center md:mt-10 lg:mt-24 mb-[20px] gap-2 sm:gap-4">
-        <MenuBar />
-      </div>
+    
       <div className="flex flex-col mt-12">
         <div className="text-[22px] font-semibold text-red-400 mb-[20px]">
           <span>Swap videos</span>

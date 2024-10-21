@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
 import DirectLeftIcon from "../../assets/DirectLeftIcon.svg";
-import MenuBar from "../../components/MenuBar/MenuBar";
 import AlbumList from "./components/AlbumList";
 
 function Album() {
@@ -9,9 +8,7 @@ function Album() {
 
   return (
     <div>
-      <div className="flex items-center md:mt-10 lg:mt-0 xl:mt-24 mb-[20px] gap-2 sm:gap-4">
-        <MenuBar />
-      </div>
+     
 
       <div className="flex justify-between text-[22px] font-semibold text-red-400 mb-[20px]">
         <span className="text-[16px] xl:text-[20px]">Swapped Images</span>

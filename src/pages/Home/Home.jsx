@@ -5,12 +5,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import SearchBar from "../../components/SearchBar/SearchBar";
 import { useSelector } from "react-redux";
 
 function Home() {
   const navigate = useNavigate();
-  const [searchKey, setSearchKey] = useState("");
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const user = useSelector(state => state.user.account)
@@ -29,10 +27,6 @@ function Home() {
     },
   };
 
-  const handleSearch = () => {
-    console.log(searchKey);
-  };
-  
   const getSwapEvent = async () => {
     try {
       const imagesResponse = await axios.get(
@@ -57,11 +51,6 @@ function Home() {
   
   return (
     <div>
-      <SearchBar
-        searchKey={searchKey}
-        setSearchKey={setSearchKey}
-        handleSearch={handleSearch}
-      />
       <div className="flex flex-col gap-[20px] mt-12 mb-5">
         <div className="image-swap">
           <div className="flex flex-col mb-[10px]">

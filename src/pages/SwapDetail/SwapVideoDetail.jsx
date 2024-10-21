@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 import Detail from "./Detail";
-import MenuBar from "../../components/MenuBar/MenuBar";
 
 function SwapVideoDetail() {
   const [videos, setVideos] = useState([]);
@@ -28,7 +27,6 @@ function SwapVideoDetail() {
 
   return (
     <div>
-      <MenuBar />
       <div className="flex flex-col rounded-lg pr-[5px] md:pr-[20px] mt-[30px]">
         <div className="text-[22px] font-semibold text-red-400 mb-[20px]">
           <span>All Details</span>

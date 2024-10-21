@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Notification from "./components/Notification/Notification";
 import SideBar from "./components/SideBar/SideBar";
+import MenuBar from "./components/MenuTopBar/MenuBar";
 
 function App() {
   return (
@@ -11,9 +11,9 @@ function App() {
             <SideBar />
           </div>
           <div className="w-[100%] mx-4 lg:ml-[6.5rem]">
+            <MenuBar/>
             <Outlet />
           </div>
-          <Notification />
         </div>
       </div>
     </>

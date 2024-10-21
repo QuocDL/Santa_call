@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
-import SearchBar from "../../components/SearchBar/SearchBar";
-import Modal from "./Modal";
-import videoIconActive from "../../assets/videoIconActive.svg";
-import videoIcon from "../../assets/videoIcon.svg";
-import galaryIconActive from "../../assets/galleryIconActive.svg";
 import galaryIcon from "../../assets/galleryIcon.svg";
+import galaryIconActive from "../../assets/galleryIconActive.svg";
+import videoIcon from "../../assets/videoIcon.svg";
+import videoIconActive from "../../assets/videoIconActive.svg";
 import ListTemplates from "./ListTemplates";
+import Modal from "./Modal";
 
 function Template() {
-  const [searchKey, setSearchKey] = useState("");
   const [videos, setVideos] = useState([]);
   const [images, setImages] = useState([]);
   const [tabItem, setTabItem] = useState("images");
@@ -18,9 +16,7 @@ function Template() {
   const [currentMedia, setCurrentMedia] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
-  const handleSearch = () => {
-    console.log(searchKey);
-  };
+
 
   const handleClickTemplate = (item) => {
     const type = tabItem === "images" ? "face" : "video";
@@ -94,11 +90,7 @@ function Template() {
 
   return (
     <div>
-      <SearchBar
-        searchKey={searchKey}
-        setSearchKey={setSearchKey}
-        handleSearch={handleSearch}
-      />
+  
 
       <div className="flex gap-4 mt-12">
         <div

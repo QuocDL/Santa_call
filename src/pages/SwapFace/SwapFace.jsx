@@ -7,7 +7,6 @@ import JSZipUtils from "jszip-utils";
 import { saveAs } from "file-saver";
 import axios from "axios";
 import { uploadImg, swapAlbumImages } from "../../services/swap.service";
-import MenuBar from "../../components/MenuBar/MenuBar";
 import UploadImageIcon from "../../assets/UploadImageIcon.svg";
 import TransferIcon from "../../assets/TransferIcon.svg";
 import DirectLeftIcon from "../../assets/DirectLeftIcon.svg";
@@ -165,9 +164,7 @@ function SwapFace() {
         accept="image/*"
         onChange={handleInputChange}
       />
-      <div className="searchBar flex items-center md:mt-10 lg:mt-24 mb-[20px] gap-2 sm:gap-4">
-        <MenuBar />
-      </div>
+     
       <div className="flex flex-col">
         <div className="text-[22px] font-semibold text-red-400 mb-[20px]">
           <span>Upload your face</span>

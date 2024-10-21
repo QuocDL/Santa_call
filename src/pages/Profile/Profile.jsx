@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import {  useId, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import NProgress from "nprogress";
@@ -6,7 +6,6 @@ import NProgress from "nprogress";
 import { doUpdateAvatar } from "../../redux/action/userAction";
 import { uploadImg } from "../../services/swap.service";
 import { changeAvatar } from "../../services/user.service";
-import MenuBar from "../../components/MenuBar/MenuBar";
 import EditProfile from "./EditProfile";
 import Library from "./Library";
 import NameInforIcon from "../../assets/NameInforIcon.svg";
@@ -82,9 +81,7 @@ function Profile() {
         accept="image/*"
         onChange={handleAvatarChange}
       />
-      <div className="flex items-center md:mt-10 lg:mt-0 xl:mt-24 mb-[20px] gap-2 sm:gap-4">
-        <MenuBar />
-      </div>
+    
 
       <div className="w-full px-4 sm:px-0 flex flex-col-reverse xl:flex-row items-center xl:items-start gap-10">
         {editProfile ? <EditProfile account={account} /> : <Library />}

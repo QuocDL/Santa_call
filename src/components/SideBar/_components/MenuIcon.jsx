@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import MenuBarIcon from "../../assets/MenuBarIcon.png";
-import MenuBarIconActive from "../../assets/MenuBarIconActive.png";
-import { setOpen } from "../../redux/slice/sideBarSlice";
+import MenuBarIcon from "../../../assets/MenuBarIcon.png";
+import MenuBarIconActive from "../../../assets/MenuBarIconActive.png";
+import { setOpen } from "../../../redux/slice/sideBarSlice";
 
-function MenuBar() {
+function MenuBarBlock() {
   const [hovered, setHovered] = useState(false);
   const isOpen = useSelector(state=> state.sideBar.isOpen)
   const dispatch = useDispatch()
@@ -31,4 +31,4 @@ function MenuBar() {
   );
 }
 
-export default MenuBar;
+export default MenuBarBlock;

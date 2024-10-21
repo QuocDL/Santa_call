@@ -1,10 +1,8 @@
-import MenuBar from "../MenuBar/MenuBar";
 import SearchIcon from "../../assets/SearchIcon.svg";
 
 function SearchBar({ searchKey, setSearchKey, handleSearch }) {
   return (
     <div className="searchBar flex items-center mt-5 gap-2 sm:gap-4">
-      <MenuBar />
       <div className="search relative">
         <img
           src={SearchIcon}
