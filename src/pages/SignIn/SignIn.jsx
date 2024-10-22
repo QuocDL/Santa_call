@@ -80,7 +80,7 @@ function SignIn() {
               </h1>
               <form
                 onSubmit={handleSubmit(submitData)}
-                className="xl:w-[25vw] mt-6"
+                className="xl:w-[35vw] w-full mt-6"
               >
                 <div className="mx-4 mt-6 max-md:mx-2.5">
                   <div className="flex rounded-lg  border border-gray-400 border-solid overflow-hidden">

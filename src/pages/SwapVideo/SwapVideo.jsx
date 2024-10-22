@@ -23,10 +23,7 @@ function SwapVideo() {
   const [uploadImgSrc, setUploadImgSrc] = useState(null);
   const [originalVideo, setOriginalVideo] = useState(null);
   const [transferedVideo, setTransferedVideo] = useState(null);
-  console.log('originalImg',originalImg);
-  console.log('transferedVideo',transferedVideo);
-  
-  
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,7 +68,7 @@ function SwapVideo() {
       
 
       const swapResponse = await axios.get(
-        `https://video.funface.online/getdata/genvideo?id_video=${originalVideo?.id}&device_them_su_kien=${deviceRegister}&ip_them_su_kien=${ipAddress}&id_user=${account.id_user}&image=${imgUploadSrc}&ten_video=${originalVideo?.name_categories}`,
+        `https://video.funface.online/getdata/genvideo?id_video=${originalVideo?.id}&device_them_su_kien=${deviceRegister}&ip_them_su_kien=${ipAddress}&id_user=${account.id_user}&image=${imgUploadSrc}&ten_video=${originalVideo?.noidung}`,
         { headers: { Authorization: `Bearer ${account.token}` } }
       );
 
@@ -98,7 +95,7 @@ function SwapVideo() {
   const getBaseVid = async () => {
     try {
       const response = await axios.get(
-        `https://databaseswap.mangasocial.online/lovehistory/listvideo/santa/${album_id}?category=3`
+        `https://api.funface.online/get/list_video/id_santa?id_video_santa=${id}`
       );
 
       if (!response) {
@@ -106,8 +103,9 @@ function SwapVideo() {
         return;
       }
 
-      const videos = response.data.list_sukien_video;
-      setOriginalVideo(videos.find((item) => item.id === Number(id)));
+      const videos = response.data.list_sukien_video[0];
+      setOriginalVideo(videos);
+
     } catch (error) {
       toast.error("Can't find video to swap");
       navigate("/swap-video");
@@ -252,7 +250,7 @@ function SwapVideo() {
                 className="rounded-xl w-full h-full"
                 controls
               >
-                <source src={originalVideo.link_video} type="video/mp4" /> Your
+                <source src={originalVideo.linkgoc} type="video/mp4" /> Your
                 browser does not support the video tag.
               </video>
             ) : (

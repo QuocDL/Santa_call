@@ -1,164 +1,134 @@
 import axios from "axios";
+import "swiper/css";
+import "swiper/css/pagination";
 import { useEffect, useState } from "react";
-
-import galaryIcon from "../../assets/galleryIcon.svg";
-import galaryIconActive from "../../assets/galleryIconActive.svg";
-import videoIcon from "../../assets/videoIcon.svg";
-import videoIconActive from "../../assets/videoIconActive.svg";
-import ListTemplates from "./ListTemplates";
-import Modal from "./Modal";
+import { SwiperSlide, Swiper } from "swiper/react";
+import { Link } from "react-router-dom";
 
 function Template() {
-  const [videos, setVideos] = useState([]);
-  const [images, setImages] = useState([]);
-  const [tabItem, setTabItem] = useState("images");
-  const [hoveredtabItem, setHoveredtabItem] = useState(null);
-  const [currentMedia, setCurrentMedia] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
-
-
-
-  const handleClickTemplate = (item) => {
-    const type = tabItem === "images" ? "face" : "video";
-    setOpenModal(true);
-    console.log(item)
-    setCurrentMedia({ type, ...item });
+  const [listImages, setImages] = useState(null)
+  const [listVideo, setListVideo] = useState(null)
+  const breakpoints = {
+    1024: {
+      slidesPerView: 3,
+      spaceBetween: 30,
+    },
+    1280: {
+      slidesPerView: 4,
+      spaceBetween: 40,
+    },
+    1536: {
+      slidesPerView: 4,
+      spaceBetween: 50,
+    },
   };
-
-  const setPreviousMedia = () => {
-    if (!currentMedia) return;
-
-    const previousMedia =
-      tabItem === "images"
-        ? images.find(
-            (item, index) =>
-              index + 1 ===
-              images.indexOf(
-                images.find((item) => item["id "] === currentMedia["id "])
-              )
-          )
-        : videos.find(
-            (item, index) =>
-              index + 1 ===
-              videos.indexOf(videos.find((item) => item.id === currentMedia.id))
-          );
-
-    setCurrentMedia(
-      previousMedia ? { type: currentMedia.type, ...previousMedia } : null
-    );
-  };
-
-  const setNextMedia = () => {
-    if (!currentMedia) return;
-
-    const nextMedia =
-      tabItem === "images"
-        ? images.find((item, index) => {
-            if (currentMedia["id "] === images[index - 1]?.["id "]) return item;
-          })
-        : videos.find((item, index) => {
-            if (currentMedia.id === videos[index - 1]?.id) return item;
-          });
-
-    setCurrentMedia(
-      nextMedia ? { type: currentMedia.type, ...nextMedia } : null
-    );
-  };
-
-  const getMedias = async () => {
-    try {
-      let response = await axios.get(
-        tabItem === "images"
-          ? "https://api.funface.online/get/list_album?server=santa"
-          : "https://databaseswap.mangasocial.online/lovehistory/listvideo/santa/1?category=3"
-      );
-      if (response) {
-        tabItem === "images"
-          ? setImages(response.data?.list_sukien_video)
-          : setVideos(response.data?.list_sukien_video);
-      } else {
-        console.log("no response");
+  const fetchImages = async () => {
+    const randomAlbum = Math.floor(Math.random() * 23) + 1;
+    const { data } = await axios.get(`https://api.funface.online/get/list_image/1?album=${randomAlbum}`)
+    setImages(data.list_sukien_video)
+  }
+  const fetchVideo = async ()=>{
+    const {data} = await axios.get(`https://api.funface.online/get/list_video/all_santa`)
+    if (data.list_sukien_video && data.list_sukien_video.length > 0) {
+      const filteredVideos = data.list_sukien_video.filter(item => item.IDCategories);
+      if (filteredVideos.length > 0) {
+        setListVideo(filteredVideos.slice(0, 20));
+        console.log(filteredVideos);
       }
-    } catch (error) {
-      console.log(error);
     }
-  };
-
+  }
   useEffect(() => {
-    getMedias();
-  }, [tabItem]);
-
+    fetchImages()
+    fetchVideo()
+  }, [])
   return (
-    <div>
-  
-
-      <div className="flex gap-4 mt-12">
-        <div
-          className={`flex items-center gap-2 p-3 sm:p-4 rounded-lg ${
-            tabItem === "images" || hoveredtabItem === "images"
-              ? "bg-red-400 text-rose-100"
-              : "bg-white text-red-400"
-          }`}
-        >
-          <img
-            src={
-              tabItem === "images" || hoveredtabItem === "images"
-                ? galaryIconActive
-                : galaryIcon
-            }
-            alt="Images"
-            className="w-[24px] h-[24px]"
-          />
-          <button
-            className="text-sm sm:text-base"
-            onClick={() => setTabItem("images")}
-            onMouseEnter={() => setHoveredtabItem("images")}
-            onMouseLeave={() => setHoveredtabItem(null)}
-          >
-            Images
-          </button>
+    <div className="mt-8">
+      <div className="mt-8">
+        <div className="flex items-center justify-between">
+          <Link to={'/swap-face'} className="bg-[#00403E] flex items-center rounded-md shadow-xl  px-2 py-1.5 gap-5">
+            <h3 className=" shadow-2xl rounded-md text-[#CF3736]  text-xl font-bold ">Swap Image</h3>
+            <span className="text-[#CF3736]  text-2xl ">&gt;</span>
+          </Link>
         </div>
-        <div
-          className={`flex items-center gap-2 p-3 sm:p-4 rounded-lg ${
-            tabItem === "videos" || hoveredtabItem === "videos"
-              ? "bg-red-400 text-rose-100"
-              : "bg-white text-red-400"
-          }`}
-        >
-          <img
-            src={
-              tabItem === "videos" || hoveredtabItem === "videos"
-                ? videoIconActive
-                : videoIcon
-            }
-            alt="Videos"
-            className="w-[24px] h-[24px]"
-          />
-          <button
-            className="text-sm sm:text-base"
-            onClick={() => setTabItem("videos")}
-            onMouseEnter={() => setHoveredtabItem("videos")}
-            onMouseLeave={() => setHoveredtabItem(null)}
+        <div>
+        <Swiper
+            className="mt-6"
+            slidesPerView={1}
+            spaceBetween={20}
+            pagination={{
+              clickable: true,
+            }}
+            breakpoints={breakpoints}
           >
-            Videos
-          </button>
+            {listImages ? listImages.map((item, index) => {
+              return (
+                <SwiperSlide key={index} className="cursor-pointer">
+                  <div className="relative ">
+                    <img
+                      src={item.image}
+                      alt="Image"
+                      className=" object-cover h-[250px]"
+                    />
+                    <div className="absolute bottom-0 px-2.5 py-1 bg-[#ffffff] w-full bg-opacity-75 text-[#00403E]">
+                      <h3 className="font-semibold text-lg">{item.thongtin}</h3>
+                      <span>More than 50 images</span>
+                      <span className="block">Download: 230</span>
+                    </div>
+                    <Link to={`/swap-face/${item.id}?album_id=${item.IDCategories}`} className="absolute bottom-6 right-6 bg-[#CF3736] text-white py-1 px-3 rounded-md font-medium">Use</Link>
+                  </div>
+                </SwiperSlide>
+              );
+            }) : <>
+              <div className="h-[220px] flex justify-center items-center">
+                <p className="text-center text-xl text-[#CF3736]">Not found data</p>
+              </div>
+            </>}
+          </Swiper>
         </div>
       </div>
-      <div className="pr-[20px] mt-[30px] max-h-[80vh]">
-        <ListTemplates
-          tabItem={tabItem}
-          medias={tabItem === "images" ? images : videos}
-          handleClickTemplate={handleClickTemplate}
-        />
+      <div className="mt-8">
+        <div className="flex items-center justify-between">
+          <Link to={'/swap-video'} className="bg-[#00403E] flex items-center rounded-md shadow-xl  px-2 py-1.5 gap-5">
+            <h3 className=" shadow-2xl rounded-md text-[#CF3736]  text-xl font-bold ">Swap Video</h3>
+            <span className="text-[#CF3736]  text-2xl ">&gt;</span>
+          </Link>
+        </div>
+        <div className="mb-12">
+          <Swiper
+            className="mt-6"
+            slidesPerView={1}
+            spaceBetween={20}
+            pagination={{
+              clickable: true,
+            }}
+            breakpoints={breakpoints}
+          >
+            {listVideo ?  listVideo.map((item, index) =>  {
+              return (
+                <SwiperSlide key={index} className="cursor-pointer">
+                  <div className="relative ">
+                    <img
+                      src={item.IDCategories}
+                      alt="Image"
+                      className=" object-cover h-[250px]"
+                    />
+                    <div className="absolute bottom-0 px-2.5 py-1 bg-[#ffffff] w-full bg-opacity-75 text-[#00403E]">
+                      <h3 className="font-semibold text-lg">{item.noidung}</h3>
+                      <span>More than 50 images</span>
+                      <span className="block">Download: 230</span>
+                    </div>
+                    <Link to={`/swap-video/${item.id}`} className="absolute bottom-6 right-6 bg-[#CF3736] text-white py-1 px-3 rounded-md font-medium">Use</Link>
+                  </div>
+                </SwiperSlide>
+              );
+            }) : <>
+              <div className="h-[220px] flex justify-center items-center">
+                <p className="text-center text-xl text-[#CF3736]">Not found data</p>
+              </div>
+            </>}
+          </Swiper>
+        </div>
       </div>
-      <Modal
-        openModal={openModal}
-        setOpenModal={setOpenModal}
-        currentMedia={currentMedia}
-        setCurrentMedia={setCurrentMedia}
-        setPreviousMedia={setPreviousMedia}
-        setNextMedia={setNextMedia}
-      />
     </div>
   );
 }
