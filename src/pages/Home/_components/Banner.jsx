@@ -68,7 +68,7 @@ export default function Banner() {
                 </div>
               </div>
               <div className=" ">
-                <video width="400" className="" autoPlay muted loop>
+                <video width="400" className="rounded-md overflow-hidden" autoPlay muted loop>
                   <source src={Video1} type="video/mp4" />
                   Trình duyệt của bạn không hỗ trợ video.
                 </video>
@@ -76,7 +76,7 @@ export default function Banner() {
             </div>
             <div>
               <div className="flex flex-col gap-5 items-center">
-              <video width="400" className="" autoPlay muted loop>
+              <video width="400" className="rounded-md overflow-hidden" autoPlay muted loop>
                   <source src={Video2} type="video/mp4" />
                   Trình duyệt của bạn không hỗ trợ video.
                 </video>

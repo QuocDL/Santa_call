@@ -1,34 +1,52 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import NProgress from "nprogress";
-import JSZip from "jszip";
-import JSZipUtils from "jszip-utils";
-import { saveAs } from "file-saver";
 import axios from "axios";
 import { uploadImg, swapAlbumImages } from "../../services/swap.service";
 import UploadImageIcon from "../../assets/UploadImageIcon.svg";
-import TransferIcon from "../../assets/TransferIcon.svg";
-import DirectLeftIcon from "../../assets/DirectLeftIcon.svg";
+import coinIcon from "../../assets/image 2.png";
+import { SwiperSlide, Swiper } from "swiper/react";
 import { useSelector } from "react-redux";
+import ProductCard from "../../components/ProductCard/ProductCard";
 
 const MAX_FILE_SIZE = 10485760;
 
 function SwapFace() {
   const [file, setFile] = useState(null);
   const [originalImg, setOriginalImg] = useState(null);
+  const [idEvent, setIdEvent] = useState(null)
   const [uploadImgSrc, setUploadImgSrc] = useState(null);
   const [transferedImgSrc, setTransferedImgSrc] = useState(null);
   const [listSrcTransfered, setListSrcTransfered] = useState([]);
+  const [listImages, setImages] = useState(null)
   const navigate = useNavigate();
   const labelRef = useRef();
   const inputId = useId();
-  const zip = new JSZip();
+  const breakpoints = {
+    1024: {
+      slidesPerView: 3,
+      spaceBetween: 30,
+    },
+    1280: {
+      slidesPerView: 4,
+      spaceBetween: 40,
+    },
+    1536: {
+      slidesPerView: 4,
+      spaceBetween: 50,
+    },
+  };
 
   const { id } = useParams();
   const searchParams = new URLSearchParams(location.search);
   const album_id = searchParams.get("album_id");
-
+  const fetchImages = async () => {
+    const convertNumberAlbum = Number(album_id)
+    const { data } = await axios.get(`https://api.funface.online/get/list_image/1?album=${convertNumberAlbum === 23 ? convertNumberAlbum : convertNumberAlbum + 1}`)
+    setImages(data.list_sukien_video)
+    console.log(data)
+  }
   const handleInputChange = (e) => {
     try {
       const fileUploaded = e.target.files[0];
@@ -71,88 +89,57 @@ function SwapFace() {
       );
       setListSrcTransfered(data["link anh da swap"]);
       setTransferedImgSrc(data.sukien_2_image.link_da_swap);
+      setIdEvent(data.sukien_2_image.id_all_sk)
     } catch (error) {
       toast.error("Fail: " + error.message);
       console.log({ err: error.message });
     }
     NProgress.done();
   };
-
-  const handleDownloadImage = async (img) => {
-    try {
-      const fileName = img.split("/").pop();
-
-      await saveAs(img, fileName);
-    } catch (error) {
-      toast.error("Error: " + error.message);
-      console.log({ err: error.message });
-    }
-  };
-
-  const handleDownloadAllImages = async () => {
-    NProgress.start();
-    try {
-      if (listSrcTransfered.length < 1)
-        throw new Error("No swapped image found");
-
-      let count = 0;
-      let zipFileName = "images.zip";
-      for (const img of listSrcTransfered) {
-        const fileName = img.split("/").pop();
-
-        const file = await JSZipUtils.getBinaryContent(img);
-        console.log(1);
-        zip.file(fileName, file, { binary: true });
-        count++;
-        if (count === listSrcTransfered.length) {
-          zip.generateAsync({ type: "blob" }).then((content) => {
-            saveAs(content, zipFileName);
-          });
-        }
-      }
-    } catch (error) {
-      toast.error("Error: " + error.message);
-      console.log({ err: error.message });
-    }
-    NProgress.done();
-  };
-
   const getBaseImg = async () => {
     try {
       if (!id) throw new Error("No ID provided");
-  
+
       const response = await axios.get(
         `https://api.funface.online/get/list_image/1?album=${album_id}`
       );
-  
-    
+
+
       console.log(response)
       const images = response.data.list_sukien_video;
-  console.log('images',images);
-  
-    const baseImg = images.find(
-      (item) => {
-        return item.id === Number(id);
-      }
-    )?.image;
-    
-    console.log('baseImg', baseImg);
+      console.log('images', images);
+
+      const baseImg = images.find(
+        (item) => {
+          return item.id === Number(id);
+        }
+      )?.image;
+
+      console.log('baseImg', baseImg);
       if (!baseImg) throw new Error("Base image not found");
-  
+
       setTransferedImgSrc(baseImg);
     } catch (error) {
       toast.error("Can't find album to swap");
       console.error("Error fetching base image:", error.message);
-      // navigate("/swap-face");
+      navigate("/swap-face");
     }
   };
 
+  const handleClickViewAlbum = () => {
+    if (idEvent) {
+      navigate(`/event/${idEvent}`)
+    } else {
+      toast.warning('You need swap image first!')
+    }
+  }
   useEffect(() => {
     getBaseImg();
+    fetchImages();
   }, []);
 
   return (
-    <div>
+    <div className="mt-6">
       <label htmlFor={inputId} ref={labelRef} className="d-none" />
       <input
         id={inputId}
@@ -162,122 +149,82 @@ function SwapFace() {
         accept="image/*"
         onChange={handleInputChange}
       />
-     
-      <div className="flex flex-col">
-        <div className="text-[22px] font-semibold text-red-400 mb-[20px]">
-          <span>Upload your face</span>
-        </div>
-
-        {listSrcTransfered?.length > 0 ? (
-          <div className="max-h-[40vh] flex flex-wrap gap-[20px] box-border pr-4 py-10 rounded-lg overflow-y-scroll">
-            {listSrcTransfered.map((item, index) => (
-              <div
-                key={index}
-                className="rounded-2xl overflow-hidden cursor-pointer w-[calc(100%/2-10px)] sm:w-[calc(100%/3-(20px*2/3))]  md:w-[calc(100%/4-(20px*3/4))] xl:w-[calc(100%/5-(20px*4/5))]"
-                onClick={() => handleDownloadImage(item)}
-              >
-                <img
-                  src={item}
-                  alt="Image swapped"
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col xl:flex-row justify-center items-center bg-white w-full px-10 sm:px-4 py-10 rounded-lg gap-5 xl:gap-20">
-            {uploadImgSrc ? (
-              <div className="flex flex-col items-center w-[400px] gap-5">
-                <img
-                  src={uploadImgSrc}
-                  alt="Face Image"
-                  className="max-w-full max-h-[400px] object-cover rounded-lg"
-                />
-
-                <button
-                  className="bg-white border border-red-400 py-2 w-[100px] rounded-lg text-red-400"
-                  onClick={() => labelRef.current?.click()}
-                >
-                  Change
-                </button>
-              </div>
-            ) : (
-              <div
-                className="flex flex-col justify-center items-center rounded-lg w-[fit-content] px-5 xl:px-20 py-10 border-4 border-gray-300 border-dashed gap-5 cursor-pointer"
+      <div className="flex justify-center w-[85%] items-center gap-5 ">
+        <div>
+          {uploadImgSrc ? (
+            <div className="flex flex-col items-center relative group">
+              <img
+                src={uploadImgSrc}
+                alt="Face Image"
+                height={320}
+                className="min-h-[320px] max-h-[320px] max-w-[250px] min-w-[250px] object-cover bg-white rounded-lg"
+              />
+              <button
+                className="bg-white opacity-0 group-hover:opacity-100 duration-300 border absolute bottom-3 border-red-400 py-2 w-[100px] rounded-lg text-red-400"
                 onClick={() => labelRef.current?.click()}
               >
-                <img src={UploadImageIcon} alt="Upload" className="w-[50px]" />
-                <span className="text-[22] text-red-400 text-center">
-                  Upload image fit PNG, JPG, JPEG, ...
-                </span>
-              </div>
-            )}
-
-            <div className="flex flex-col justify-between items-center xl:items-start gap-10 xl:gap-20">
-              <div className="flex flex-col items-center xl:items-start">
-                <span className="uppercase text-gray-400">Download image</span>
-                <span className="text-red-400 font-semibold text-[20px]">
-                  Your Image Need To Move...
-                </span>
-              </div>
-
-              <button
-                className="bg-red-400 py-4 w-[200px] rounded-lg text-white"
-                onClick={handleUploadAndSwap}
-              >
-                Upload & Swap
+                Change
               </button>
             </div>
-          </div>
-        )}
+          ) : (
+            <div
+              className="flex flex-col justify-center items-center h-[320px] rounded-lg w-[250px] px-5 xl:px-20 py-10 bg-white gap-5 cursor-pointer"
+              onClick={() => labelRef.current?.click()}
+            >
+              <img src={UploadImageIcon} alt="Upload" className="w-[50px]" />
 
-        <div className="flex flex-col lg:flex-row items-center lg:justify-between mt-10 gap-5">
-          <div className="flex justify-center items-center w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] xl:w-[550px] xl:h-[550px] bg-gray-500 rounded-lg overflow-hidden">
-            {originalImg ? (
-              <img
-                src={originalImg}
-                alt="Image"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-gray-300">No Image</span>
-            )}
-          </div>
-          <img
-            src={TransferIcon}
-            alt="Transfer"
-            className="w-[50px] h-[50px] rotate-90 lg:rotate-0"
-          />
-
-          <div className="flex justify-center items-center w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] xl:w-[550px] xl:h-[550px] bg-gray-500 rounded-lg overflow-hidden">
-            {transferedImgSrc ? (
-              <img
-                src={transferedImgSrc}
-                alt="Image"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-gray-300">No Image</span>
-            )}
+            </div>
+          )}
+          <div className="h-[40px] mt-2 flex">
+            <input type="text" placeholder="Enter file name..." className="w-full border-[1px] border-[#CF3736] px-4" />
           </div>
         </div>
+        <div>
+          <button className="bg-[#CF3736] text-white flex items-center rounded-md px-2 gap-2 py-1.5" onClick={handleUploadAndSwap}>Swap -1 <img src={coinIcon} className="w-4" alt="" /></button>
+        </div>
+        <div>
+          <div className="flex flex-col items-center ">
+            <img
+              src={transferedImgSrc}
+              alt="Face Image"
+              height={320}
+              className="min-h-[320px] max-h-[320px] max-w-[250px] min-w-[250px]  object-cover bg-white rounded-lg"
+            />
 
-        <div className="flex justify-between items-center mt-10">
-          <button
-            className="bg-red-400 py-3 xl:py-4 w-[150px] xl:w-[200px] rounded-lg text-white text-[16px] xl:text-[20px]"
-            onClick={handleDownloadAllImages}
+          </div>
+          <div className="h-[40px] mt-2 flex justify-center">
+            <button onClick={handleClickViewAlbum} className=" bg-[#CF3736] flex items-center px-4 text-white font-semibold rounded-md">View Album</button>
+          </div>
+        </div>
+      </div>
+      <div className="mt-8">
+        <div className="flex items-center justify-between">
+          <Link to={'/swap-video'} className="bg-[#00403E] flex items-center rounded-md shadow-xl  px-2 py-1.5 gap-5">
+            <h3 className=" shadow-2xl rounded-md text-[#CF3736]  text-xl font-bold ">Suggestions for you</h3>
+          </Link>
+        </div>
+        <div className="mb-12">
+          <Swiper
+            className="mt-6"
+            slidesPerView={1}
+            spaceBetween={20}
+            pagination={{
+              clickable: true,
+            }}
+            breakpoints={breakpoints}
           >
-            Download
-          </button>
-
-          <button
-            className="flex items-center text-red-400 text-[16px] xl:text-[20px] gap-2"
-            onClick={() => navigate("/swap-face")}
-          >
-            <span>Go to detail</span>
-            <img src={DirectLeftIcon} alt="Direct" />
-          </button>
+            {listImages ? listImages.map((item, index) => {
+              return (
+                <SwiperSlide key={index} className="cursor-pointer">
+                  <ProductCard image={item.image} title={item.thongtin} link={`/swap-face/${item.id}?album_id=${item.IDCategories}`} />
+                </SwiperSlide>
+              );
+            }) : <>
+              <div className="h-[220px] flex justify-center items-center">
+                <p className="text-center text-xl text-[#CF3736]">Not found data</p>
+              </div>
+            </>}
+          </Swiper>
         </div>
       </div>
     </div>

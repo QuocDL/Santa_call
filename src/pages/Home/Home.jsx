@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { Link } from "react-router-dom";
+import ProductCard from "../../components/ProductCard/ProductCard";
 
 export default function Home() {
   const [listImages, setImages] = useState(null)
@@ -28,8 +29,8 @@ export default function Home() {
     const { data } = await axios.get(`https://api.funface.online/get/list_image/1?album=${randomAlbum}`)
     setImages(data.list_sukien_video)
   }
-  const fetchVideo = async ()=>{
-    const {data} = await axios.get(`https://api.funface.online/get/list_video/all_santa`)
+  const fetchVideo = async () => {
+    const { data } = await axios.get(`https://api.funface.online/get/list_video/all_santa`)
     if (data.list_sukien_video && data.list_sukien_video.length > 0) {
       const filteredVideos = data.list_sukien_video.filter(item => item.IDCategories);
       if (filteredVideos.length > 0) {
@@ -54,7 +55,7 @@ export default function Home() {
           </Link>
         </div>
         <div>
-        <Swiper
+          <Swiper
             className="mt-6"
             slidesPerView={1}
             spaceBetween={20}
@@ -66,19 +67,7 @@ export default function Home() {
             {listImages ? listImages.map((item, index) => {
               return (
                 <SwiperSlide key={index} className="cursor-pointer">
-                  <div className="relative ">
-                    <img
-                      src={item.image}
-                      alt="Image"
-                      className=" object-cover h-[250px]"
-                    />
-                    <div className="absolute bottom-0 px-2.5 py-1 bg-[#ffffff] w-full bg-opacity-75 text-[#00403E]">
-                      <h3 className="font-semibold text-lg">{item.thongtin}</h3>
-                      <span>More than 50 images</span>
-                      <span className="block">Download: 230</span>
-                    </div>
-                    <Link to={`/swap-face/${item.id}?album_id=${item.IDCategories}`} className="absolute bottom-6 right-6 bg-[#CF3736] text-white py-1 px-3 rounded-md font-medium">Use</Link>
-                  </div>
+                  <ProductCard image={item.image} title={item.thongtin} link={`/swap-face/${item.id}?album_id=${item.IDCategories}`} />
                 </SwiperSlide>
               );
             }) : <>
@@ -106,22 +95,10 @@ export default function Home() {
             }}
             breakpoints={breakpoints}
           >
-            {listVideo ?  listVideo.map((item, index) =>  {
+            {listVideo ? listVideo.map((item, index) => {
               return (
                 <SwiperSlide key={index} className="cursor-pointer">
-                  <div className="relative ">
-                    <img
-                      src={item.IDCategories}
-                      alt="Image"
-                      className=" object-cover h-[250px]"
-                    />
-                    <div className="absolute bottom-0 px-2.5 py-1 bg-[#ffffff] w-full bg-opacity-75 text-[#00403E]">
-                      <h3 className="font-semibold text-lg">{item.noidung}</h3>
-                      <span>More than 50 images</span>
-                      <span className="block">Download: 230</span>
-                    </div>
-                    <Link to={`/swap-video/${item.id}`} className="absolute bottom-6 right-6 bg-[#CF3736] text-white py-1 px-3 rounded-md font-medium">Use</Link>
-                  </div>
+                  <ProductCard image={item.IDCategories} title={item.noidung} link={`/swap-video/${item.id}`} />
                 </SwiperSlide>
               );
             }) : <>

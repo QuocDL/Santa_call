@@ -13,7 +13,9 @@ html {
 body {
   font-family: "Poppins", sans-serif;
 }
-
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Ẩn scrollbar */
+}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
