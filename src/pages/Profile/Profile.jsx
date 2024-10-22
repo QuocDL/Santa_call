@@ -1,9 +1,9 @@
-import {  useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import NProgress from "nprogress";
 
-import { doUpdateAvatar } from "../../redux/action/userAction";
+import { doLogout, doUpdateAvatar } from "../../redux/action/userAction";
 import { uploadImg } from "../../services/swap.service";
 import { changeAvatar } from "../../services/user.service";
 import EditProfile from "./EditProfile";
@@ -12,22 +12,28 @@ import NameInforIcon from "../../assets/NameInforIcon.svg";
 import BirthdayInforIcon from "../../assets/BirthdayInforIcon.svg";
 import AddressInforIcon from "../../assets/AddressInforIcon.svg";
 import PhoneInforIcon from "../../assets/PhoneInforIcon.svg";
+import { useNavigate } from "react-router-dom";
+
 
 const MAX_FILE_SIZE = 10485760;
 
 function Profile() {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate()
   const account = useSelector((state) => state.user.account);
-
-
-
   const [editProfile, setEditProfile] = useState(false);
-  const [avatarHover, setAvatarHover] = useState(false);
-
   const labelRef = useRef();
   const inputId = useId();
-
+  const handleLogout = () => {
+    NProgress.start();
+    try {
+      dispatch(doLogout());
+      navigate("/");
+    } catch (error) {
+      toast.error("Logout Fail");
+    }
+    NProgress.done();
+  };
   const handleAvatarChange = async (e) => {
     NProgress.start();
     try {
@@ -69,100 +75,69 @@ function Profile() {
     }
     NProgress.done();
   };
-
+  console.log(account)
   return (
-    <div>
-      <label htmlFor={inputId} ref={labelRef} className="d-none" />
-      <input
-        id={inputId}
-        type="file"
-        className="hidden"
-        multiple
-        accept="image/*"
-        onChange={handleAvatarChange}
-      />
-    
-
-      <div className="w-full px-4 sm:px-0 flex flex-col-reverse xl:flex-row items-center xl:items-start gap-10">
-        {editProfile ? <EditProfile account={account} /> : <Library />}
-
-        <div className="flex flex-col mt-10">
-          <div className=" bg-red-400 p-3 rounded-t-lg">
-            <span className="text-[18px] font-medium text-white">Profile</span>
+    <div className="flex gap-5 flex-col lg:flex-row mt-6">
+      <div className="flex flex-col gap-5 w-full  lg:w-[30vw] ">
+        <label htmlFor={inputId} ref={labelRef} className="d-none hidden" />
+        <input
+          id={inputId}
+          type="file"
+          className="hidden"
+          multiple
+          accept="image/*"
+          onChange={handleAvatarChange}
+        />
+        <div className=" rounded-lg overflow-hidden">
+          <div className="bg-[#CF3736] px-2 py-1.5">
+            <img src={account.link_avatar} onClick={() => labelRef.current?.click()} className="w-24 cursor-pointer h-24 rounded-full overflow-hidden border-[1px] border-black" alt="" />
           </div>
-          <div className="px-16 md:px-28 py-12 flex flex-col justify-evenly items-center rounded-b-lg bg-white">
-            <div
-              className="relative w-[100px] h-[100px] rounded-full overflow-hidden hover:bg-neutral-800 cursor-pointer mb-[20px]"
-              onClick={() => labelRef.current?.click()}
-              onMouseEnter={() => setAvatarHover(true)}
-              onMouseLeave={() => setAvatarHover(false)}
-            >
-              <img
-                src={account.link_avatar}
-                alt="Avatar"
-                className="w-full h-full hover:opacity-55"
-              />
-              <div className="absolute opacity-70 bottom-0 left-0 flex justify-center items-center w-full bg-neutral-600 text-white">
-                Edit
-              </div>
+          <div className="text-[#CF3736] font-medium bg-white">
+            <ul className="flex flex-col gap-5 p-6">
+              <li><span>{account.user_name}</span></li>
+              <li><span>{account.email}</span></li>
+              <li><span>{account.birthday || '06/08/2002'}</span></li>
+              <li><span>{account.phone || '0324567891'}</span></li>
+            </ul>
+            <div className="w-full flex justify-center pb-8">
+              <button onClick={handleLogout} className="flex items-center justify-center bg-[#CF3736] shadow-md px-8 py-1.5 rounded-md text-white font-semibold">
+                <img src="" alt="" />
+                <span>Log out</span>
+              </button>
             </div>
-
-            {avatarHover && (
-              <div className="relative">
-                <div
-                  className="bg-slate-50 absolute top-full right-[-20px] w-[40px] h-[40px]"
-                  style={{ clipPath: "polygon(50% 0%, 0 100%, 100% 100%)" }}
-                ></div>
-                <div className="bg-slate-50 absolute top-[40px] right-[-100px] md:right-[-25px] text-[20px] text-red-400 rounded-lg flex flex-col gap-4 px-[10px] px-8 min-w-[300px] py-4 shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.4)]">
-                  <div className="flex items-center gap-2 w-[fit-content]">
-                    <img
-                      src={NameInforIcon}
-                      alt="Name"
-                      className="w-[32px] h-[32px]"
-                    />
-                    <span className="truncate">
-                      {account.user_name || "Unknown"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 w-[fit-content]">
-                    <img
-                      src={BirthdayInforIcon}
-                      alt="Name"
-                      className="w-[32px] h-[32px]"
-                    />
-                    <span>{account.birthday || "Unknown"}</span>
-                  </div>
-                  <div className="flex items-center gap-2 w-[fit-content]">
-                    <img
-                      src={AddressInforIcon}
-                      alt="Name"
-                      className="w-[32px] h-[32px]"
-                    />
-                    <span>{account.address || "Unknown"}</span>
-                  </div>
-                  <div className="flex items-center gap-2 w-[fit-content]">
-                    <img
-                      src={PhoneInforIcon}
-                      alt="Name"
-                      className="w-[32px] h-[32px]"
-                    />
-                    <span>{account.phone || "Unknown"}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <span className="text-[22px] font-semibold text-green-800">
-              {account.user_name}
-            </span>
-            <span className="text-gray-400 mb-[20px]">Personal Account</span>
-            <button
-              className="capitalize bg-red-400 px-2 py-3 w-[100px] xl:w-[150px] rounded-lg text-white text-[14px] xl:text-[16px]"
-              onClick={() => setEditProfile(!editProfile)}
-            >
-              {editProfile ? "Library" : "Edit Profile"}
-            </button>
           </div>
+        </div>
+      </div>
+      <div className="flex flex-col w-full">
+        <div className="rounded-md overflow-hidden">
+          <div className="bg-[#CF3736] px-2 py-1.5">
+            <h3 className="text-xl font-medium text-white">Update Profile</h3>
+          </div>
+          <form className=" font-medium bg-white p-6 flex flex-col gap-3">
+            <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
+              <label htmlFor="" className="text-[#777777]">Name</label>
+              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.user_name} />
+            </div>
+            <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
+              <label htmlFor="" className="text-[#777777]">Email</label>
+              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.email} />
+            </div>
+            <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
+              <label htmlFor="" className="text-[#777777]">Birthday</label>
+              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.birthday || '06-08-2002'} />
+            </div>
+            <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
+              <label htmlFor="" className="text-[#777777]">Birthday</label>
+              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.phone || '0324567891'} />
+            </div>
+            <div className="w-full flex justify-end gap-5 items-center">
+              <button className="flex items-center justify-center bg-black shadow-md px-8 py-1.5 rounded-md text-white font-semibold">
+                <span>Cancel</span>
+              </button> <button className="flex items-center justify-center bg-[#CF3736] shadow-md px-8 py-1.5 rounded-md text-white font-semibold">
+                <span>Update</span>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

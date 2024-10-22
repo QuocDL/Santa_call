@@ -1,10 +1,11 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { deviceDetect } from "react-device-detect";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import NProgress from "nprogress";
+import coinIcon from "../../assets/image 2.png";
 import axios from "axios";
 
 import TransferIcon from "../../assets/TransferIcon.svg";
@@ -15,7 +16,6 @@ const MAX_FILE_SIZE = 10485760;
 
 function SwapVideo() {
   const account = useSelector((state) => state.user.account);
-
   const [ipAddress, setIpAddress] = useState("");
   const [deviceRegister, setDeviceRegister] = useState("");
   const [file, setFile] = useState(null);
@@ -60,12 +60,12 @@ function SwapVideo() {
         "https://databaseswap.mangasocial.online/upload-gensk/200?type=src_vid",
         formData
       );
-      
+
       if (!uploadResponse) throw new Error("Upload image fail");
 
       const imgUploadSrc = uploadResponse.data;
-      console.log('imgUploadSrc',imgUploadSrc);
-      
+      console.log('imgUploadSrc', imgUploadSrc);
+
 
       const swapResponse = await axios.get(
         `https://video.funface.online/getdata/genvideo?id_video=${originalVideo?.id}&device_them_su_kien=${deviceRegister}&ip_them_su_kien=${ipAddress}&id_user=${account.id_user}&image=${imgUploadSrc}&ten_video=${originalVideo?.noidung}`,
@@ -153,7 +153,7 @@ function SwapVideo() {
   };
 
   return (
-    <div>
+    <div className="mt-6">
       <label htmlFor={inputId} ref={labelRef} className="d-none" />
       <input
         id={inputId}
@@ -163,82 +163,46 @@ function SwapVideo() {
         accept="image/*"
         onChange={handleInputChange}
       />
-    
-      <div className="flex flex-col mt-12">
-        <div className="text-[22px] font-semibold text-red-400 mb-[20px]">
-          <span>Swap videos</span>
-        </div>
-
-        {!transferedVideo && (
-          <div className="flex flex-col xl:flex-row justify-center items-center bg-white w-full py-10 rounded-lg gap-5 xl:gap-20">
-            {uploadImgSrc ? (
-              <div className="flex flex-col items-center w-[400px] gap-5">
-                <img
-                  src={uploadImgSrc}
-                  alt="Face Image"
-                  className="max-w-full max-h-[400px] object-cover rounded-lg"
-                />
-
-                <button
-                  className="bg-white border border-red-400 py-2 w-[100px] rounded-lg text-red-400"
-                  onClick={() => labelRef.current?.click()}
-                >
-                  Change
-                </button>
-              </div>
-            ) : (
-              <div
-                className="flex flex-col justify-center items-center rounded-lg w-[fit-content] px-5 xl:px-20 py-10 border-4 border-gray-300 border-dashed gap-5 cursor-pointer"
+      <div className="flex justify-center w-[85%] items-center gap-5 ">
+        <div>
+          {uploadImgSrc ? (
+            <div className="flex flex-col items-center relative group">
+              <img
+                src={uploadImgSrc}
+                alt="Face Image"
+                height={320}
+                className="min-h-[320px] max-h-[320px] max-w-[250px] min-w-[250px] object-cover bg-white rounded-lg"
+              />
+              <button
+                className="bg-white opacity-0 group-hover:opacity-100 duration-300 border absolute bottom-3 border-red-400 py-2 w-[100px] rounded-lg text-red-400"
                 onClick={() => labelRef.current?.click()}
               >
-                <img src={UploadImageIcon} alt="Upload" className="w-[50px]" />
-                <span className="text-[22] text-red-400">
-                  Upload image fit PNG, JPG, JPEG, ...
-                </span>
-              </div>
-            )}
-
-            <div className="flex flex-col justify-between items-center xl:items-start gap-10 xl:gap-20">
-              <div className="flex flex-col items-center xl:items-start">
-                <span className="uppercase text-gray-400">Download image</span>
-                <span className="text-red-400 font-semibold text-[20px]">
-                  Your Image Need To Move...
-                </span>
-              </div>
-
-              <button
-                className="bg-red-400 py-4 w-[200px] rounded-lg text-white"
-                onClick={handleUploadAndSwap}
-              >
-                Upload & Swap
+                Change
               </button>
             </div>
-          </div>
-        )}
+          ) : (
+            <div
+              className="flex flex-col justify-center items-center h-[320px] rounded-lg w-[250px] px-5 xl:px-20 py-10 bg-white gap-5 cursor-pointer"
+              onClick={() => labelRef.current?.click()}
+            >
+              <img src={UploadImageIcon} alt="Upload" className="w-[50px]" />
 
-        <div className="flex flex-col lg:flex-row items-center lg:justify-between mt-10 gap-5">
-          <div className="flex justify-center items-center w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] xl:w-[550px] xl:h-[550px] bg-gray-500 rounded-lg overflow-hidden">
-            {originalImg ? (
-              <img
-                src={originalImg}
-                alt="Image"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-gray-300">No Image</span>
-            )}
+            </div>
+          )}
+          <div className="h-[40px] mt-2 flex">
+            <input type="text" placeholder="Enter file name..." className="w-full border-[1px] border-[#CF3736] px-4" />
           </div>
-          <img
-            src={TransferIcon}
-            alt="Transfer"
-            className="w-[50px] h-[50px] rotate-90 lg:rotate-0"
-          />
+        </div>
+        <div>
+          <button className="bg-[#CF3736] text-white flex items-center rounded-md px-2 gap-2 py-1.5" onClick={handleUploadAndSwap}>Swap -1 <img src={coinIcon} className="w-4" alt="" /></button>
+        </div>
+        <div>
+          <div className="flex flex-col items-center ">
 
-          <div className="flex justify-center items-center w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] xl:w-[550px] xl:h-[550px] bg-gray-500 rounded-lg overflow-hidden">
             {transferedVideo ? (
               <video
                 key={transferedVideo}
-                className="rounded-xl w-full h-full"
+                className="min-h-[320px] max-h-[320px] max-w-[250px] min-w-[250px]"
                 controls
               >
                 <source src={transferedVideo} type="video/mp4" /> Your browser
@@ -247,7 +211,7 @@ function SwapVideo() {
             ) : originalVideo ? (
               <video
                 key={originalVideo.id}
-                className="rounded-xl w-full h-full"
+                className="min-h-[320px] max-h-[320px] max-w-[250px] min-w-[250px]"
                 controls
               >
                 <source src={originalVideo.linkgoc} type="video/mp4" /> Your
@@ -257,23 +221,39 @@ function SwapVideo() {
               <span className="text-gray-300">No Video</span>
             )}
           </div>
+          <div className="h-[40px] mt-2 flex justify-center">
+            <button className=" bg-[#CF3736] flex items-center px-4 text-white font-semibold rounded-md">Download</button>
+          </div>
         </div>
-
-        <div className="flex justify-between items-center mt-10">
-          <button
-            className="bg-red-400 py-3 xl:py-4 w-[150px] xl:w-[200px] rounded-lg text-white text-[16px] xl:text-[20px]"
-            onClick={handleDownloadVideo}
-          >
-            Download
-          </button>
-
-          <button
-            className="flex items-center text-red-400 text-[16px] xl:text-[20px] gap-2"
-            onClick={() => navigate("/swap-video")}
-          >
-            <span>Go to detail</span>
-            <img src={DirectLeftIcon} alt="Direct" />
-          </button>
+      </div>
+      <div className="mt-8">
+        <div className="flex items-center justify-between">
+          <Link to={'/swap-video'} className="bg-[#00403E] flex items-center rounded-md shadow-xl  px-2 py-1.5 gap-5">
+            <h3 className=" shadow-2xl rounded-md text-[#CF3736]  text-xl font-bold ">Suggestions for you</h3>
+          </Link>
+        </div>
+        <div className="mb-12">
+          {/* <Swiper
+          className="mt-6"
+          slidesPerView={1}
+          spaceBetween={20}
+          pagination={{
+            clickable: true,
+          }}
+          breakpoints={breakpoints}
+        >
+          {listImages ? listImages.map((item, index) => {
+            return (
+              <SwiperSlide key={index} className="cursor-pointer">
+                <ProductCard image={item.image} title={item.thongtin} link={`/swap-face/${item.id}?album_id=${item.IDCategories}`} />
+              </SwiperSlide>
+            );
+          }) : <>
+            <div className="h-[220px] flex justify-center items-center">
+              <p className="text-center text-xl text-[#CF3736]">Not found data</p>
+            </div>
+          </>}
+        </Swiper> */}
         </div>
       </div>
     </div>
