@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
-import { apiAuth } from '../../utils/axiosConfig'
-import NProgress from "nprogress";
-import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { toast } from "react-toastify";
+import JSZip from "jszip";
 import JSZipUtils from "jszip-utils";
+import NProgress from "nprogress";
+import  { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import { toast } from "react-toastify";
+import { apiAuth } from '../../utils/axiosConfig';
 export default function ListImageDetail() {
    const user = useSelector(state => state.user.account)
    const { eventId } = useParams()
@@ -109,7 +109,7 @@ export default function ListImageDetail() {
         </div>
       
        <div className='flex flex-wrap gap-5 mb-8 mt-4'>
-         {eventList && eventList.items.map((item, index) => {
+         {eventList && eventList.items.map((item) => {
             return (
                   <div key={item.id_saved} className='relative group'>
                      <img src={item.link_da_swap} className='max-w-[220px] rounded-md overflow-hidden min-w-[220px] min-h-[320px] max-h-[320px] object-cover' alt="" />

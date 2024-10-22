@@ -1,27 +1,30 @@
-import { useId, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 import NProgress from "nprogress";
-
+import { useId, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import BirthDayIcon from "../../assets/BirthdayIcon.png";
+import MailIcon from "../../assets/MailIconProfile.png";
+import PhoneIcon from "../../assets/PhoneIcon.png";
+import UserIcon from "../../assets/UserIconProfile.png";
+import LogOutIcon from "../../assets/mdi_logout.png";
+import FilterIcon from "../../assets/mi_filter.png";
+import CameraIcon from "../../assets/tabler_camera-filled.png";
 import { doLogout, doUpdateAvatar } from "../../redux/action/userAction";
 import { uploadImg } from "../../services/swap.service";
 import { changeAvatar } from "../../services/user.service";
-import EditProfile from "./EditProfile";
-import Library from "./Library";
-import NameInforIcon from "../../assets/NameInforIcon.svg";
-import BirthdayInforIcon from "../../assets/BirthdayInforIcon.svg";
-import AddressInforIcon from "../../assets/AddressInforIcon.svg";
-import PhoneInforIcon from "../../assets/PhoneInforIcon.svg";
-import { useNavigate } from "react-router-dom";
-
+import VideoList from "./components/VideoList";
+import ImagesList from "./components/ImagesList";
 
 const MAX_FILE_SIZE = 10485760;
 
 function Profile() {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const [select, setSelect] = useState("images");
+
   const account = useSelector((state) => state.user.account);
-  const [editProfile, setEditProfile] = useState(false);
   const labelRef = useRef();
   const inputId = useId();
   const handleLogout = () => {
@@ -75,7 +78,15 @@ function Profile() {
     }
     NProgress.done();
   };
-  console.log(account)
+
+  const demoHandleFilter = () => {
+    if (select === "images") {
+      setSelect("videos");
+    } else {
+      setSelect("images");
+    }
+  };
+
   return (
     <div className="flex gap-5 flex-col lg:flex-row mt-6">
       <div className="flex flex-col gap-5 w-full  lg:w-[30vw] ">
@@ -90,54 +101,129 @@ function Profile() {
         />
         <div className=" rounded-lg overflow-hidden">
           <div className="bg-[#CF3736] px-2 py-1.5">
-            <img src={account.link_avatar} onClick={() => labelRef.current?.click()} className="w-24 cursor-pointer h-24 rounded-full overflow-hidden border-[1px] border-black" alt="" />
+            <div
+              onClick={() => labelRef.current?.click()}
+              className="cursor-pointer relative inline-block"
+            >
+              <img
+                src={account.link_avatar}
+                className="w-24 cursor-pointer h-24 rounded-full overflow-hidden border-[1px] border-black"
+                alt=""
+              />
+              <div className="bg-white inline-block absolute bottom-0 right-0 rounded-full p-1 border-[1px] border-black">
+                <img src={CameraIcon} alt="" />
+              </div>
+            </div>
           </div>
           <div className="text-[#CF3736] font-medium bg-white">
             <ul className="flex flex-col gap-5 p-6">
-              <li><span>{account.user_name}</span></li>
-              <li><span>{account.email}</span></li>
-              <li><span>{account.birthday || '06/08/2002'}</span></li>
-              <li><span>{account.phone || '0324567891'}</span></li>
+              <li className="flex items-center gap-2">
+                <img src={UserIcon} alt="" />
+                <span>{account.user_name}</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <img src={MailIcon} alt="" />
+                <span>{account.email}</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <img src={BirthDayIcon} alt="" />
+                <span>{account.birthday || "06/08/2002"}</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <img src={PhoneIcon} alt="" />
+                <span>{account.phone || "0324567891"}</span>
+              </li>
             </ul>
             <div className="w-full flex justify-center pb-8">
-              <button onClick={handleLogout} className="flex items-center justify-center bg-[#CF3736] shadow-md px-8 py-1.5 rounded-md text-white font-semibold">
-                <img src="" alt="" />
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 justify-center bg-[#CF3736] shadow-md px-3 py-1.5 rounded-md text-white font-semibold"
+              >
+                <img src={LogOutIcon} alt="" />
                 <span>Log out</span>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col gap-5 w-full">
         <div className="rounded-md overflow-hidden">
           <div className="bg-[#CF3736] px-2 py-1.5">
             <h3 className="text-xl font-medium text-white">Update Profile</h3>
           </div>
           <form className=" font-medium bg-white p-6 flex flex-col gap-3">
             <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
-              <label htmlFor="" className="text-[#777777]">Name</label>
-              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.user_name} />
+              <label htmlFor="" className="text-[#777777]">
+                Name
+              </label>
+              <input
+                type="text"
+                className=" outline-none font-bold text-black"
+                defaultValue={account.user_name}
+              />
             </div>
             <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
-              <label htmlFor="" className="text-[#777777]">Email</label>
-              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.email} />
+              <label htmlFor="" className="text-[#777777]">
+                Email
+              </label>
+              <input
+                type="text"
+                className=" outline-none font-bold text-black"
+                defaultValue={account.email}
+              />
             </div>
             <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
-              <label htmlFor="" className="text-[#777777]">Birthday</label>
-              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.birthday || '06-08-2002'} />
+              <label htmlFor="" className="text-[#777777]">
+                Birthday
+              </label>
+              <input
+                type="text"
+                className=" outline-none font-bold text-black"
+                defaultValue={account.birthday || "06-08-2002"}
+              />
             </div>
             <div className="border-[1px] border-[#00403E] rounded-md px-4 py-1 flex flex-col gap-2">
-              <label htmlFor="" className="text-[#777777]">Birthday</label>
-              <input type="text" className=" outline-none font-bold text-black" defaultValue={account.phone || '0324567891'} />
+              <label htmlFor="" className="text-[#777777]">
+                Birthday
+              </label>
+              <input
+                type="text"
+                className=" outline-none font-bold text-black"
+                defaultValue={account.phone || "0324567891"}
+              />
             </div>
             <div className="w-full flex justify-end gap-5 items-center">
               <button className="flex items-center justify-center bg-black shadow-md px-8 py-1.5 rounded-md text-white font-semibold">
                 <span>Cancel</span>
-              </button> <button className="flex items-center justify-center bg-[#CF3736] shadow-md px-8 py-1.5 rounded-md text-white font-semibold">
+              </button>{" "}
+              <button className="flex items-center justify-center bg-[#CF3736] shadow-md px-8 py-1.5 rounded-md text-white font-semibold">
                 <span>Update</span>
               </button>
             </div>
           </form>
+        </div>
+        <div className="rounded-md overflow-hidden">
+          <div className="bg-[#CF3736] ">
+            <div className=" py-2 flex justify-between items-center px-6 text-white">
+              <h3 className="text-xl font-medium ">Products</h3>
+              <button onClick={demoHandleFilter}>
+                {" "}
+                <img src={FilterIcon} alt="" />
+              </button>
+            </div>
+            <div className=" bg-white pt-3 px-4">
+              <h3 className="mb-3 text-xl font-bold">All {select}</h3>
+              {select === "images" ? (
+                <>
+                  <ImagesList/>
+                </>
+              ) : (
+                <>
+                  <VideoList />
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

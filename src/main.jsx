@@ -1,31 +1,30 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App.jsx";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword.jsx";
 import NotFound from "./pages/NotFound/NotFound.jsx";
+import Profile from "./pages/Profile/Profile.jsx";
 import SignIn from "./pages/SignIn/SignIn.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
-import ForgotPassword from "./pages/ForgotPassword/ForgotPassword.jsx";
-import Template from "./pages/Template/Template.jsx";
 import SwapFaceDetail from "./pages/SwapDetail/SwapFaceDetail.jsx";
 import SwapVideoDetail from "./pages/SwapDetail/SwapVideoDetail.jsx";
 import SwapFace from "./pages/SwapFace/SwapFace.jsx";
 import SwapVideo from "./pages/SwapVideo/SwapVideo.jsx";
-import Profile from "./pages/Profile/Profile.jsx";
-import Album from "./pages/Profile/Album.jsx";
+import Template from "./pages/Template/Template.jsx";
 
-import { ToastContainer } from "react-toastify";
 import NProgress from "nprogress";
 import { Provider } from "react-redux";
-import { store, persistor } from "./redux/store";
+import { ToastContainer } from "react-toastify";
 import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./redux/store";
 
-import "react-toastify/dist/ReactToastify.css";
 import "nprogress/nprogress.css";
+import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
-import PrivateRoute from "./routes/PrivateRoute.jsx";
-import Home from "./pages/Home/Home.jsx";
 import ListImageDetail from "./pages/Events/ListImageDetail.jsx";
+import Home from "./pages/Home/Home.jsx";
+import PrivateRoute from "./routes/PrivateRoute.jsx";
 
 NProgress.configure({
   showSpinner: false,
@@ -48,7 +47,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/swap-face/:id" element={<PrivateRoute><SwapFace /></PrivateRoute>} />
                 <Route path="/swap-video/:id" element={<PrivateRoute><SwapVideo /></PrivateRoute>} />
                 <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-                <Route path="/profile/album/:id" element={<PrivateRoute><Album /></PrivateRoute>} />
             </Route>
 
             {/* Route sign in */}

@@ -29,12 +29,11 @@ function Template() {
     setImages(data.list_sukien_video)
   }
   const fetchVideo = async () => {
-    const { data } = await axios.get(`https://api.funface.online/get/list_video/all_santa`)
+    const { data } = await axios.get(`https://api.funface.online/get/list_video/all_santa/15?page=4`)
     if (data.list_sukien_video && data.list_sukien_video.length > 0) {
       const filteredVideos = data.list_sukien_video.filter(item => item.IDCategories);
       if (filteredVideos.length > 0) {
-        setListVideo(filteredVideos.slice(0, 20));
-        console.log(filteredVideos);
+        setListVideo(filteredVideos);
       }
     }
   }

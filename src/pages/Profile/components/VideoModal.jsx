@@ -11,7 +11,6 @@ function VideoModal({
   downloadVideo,
 }) {
   if (!openVideoModal || !currentVideo) return null;
-
   return (
     <div
       className="fixed w-screen h-screen top-0 left-0 flex justify-evenly items-center bg-black bg-opacity-70 z-20"
@@ -35,11 +34,11 @@ function VideoModal({
           onClick={(e) => e.stopPropagation()}
         >
           <video
-            key={currentVideo.id}
+            key={currentVideo.id_saved}
             className="rounded-xl w-full h-full"
             controls
           >
-            <source src={currentVideo.link_video} type="video/mp4" /> Your
+            <source src={currentVideo.link_da_swap} type="video/mp4" /> Your
             browser does not support the video tag.
           </video>
         </div>

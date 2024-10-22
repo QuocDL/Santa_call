@@ -14,13 +14,11 @@ const MAX_FILE_SIZE = 10485760;
 
 function SwapFace() {
   const [file, setFile] = useState(null);
-  const [originalImg, setOriginalImg] = useState(null);
-  const [idEvent, setIdEvent] = useState(null)
+  const [idEvent, setIdEvent] = useState(null);
   const [uploadImgSrc, setUploadImgSrc] = useState(null);
   const [transferedImgSrc, setTransferedImgSrc] = useState(null);
-  const [listSrcTransfered, setListSrcTransfered] = useState([]);
-  const [baseName, setBaseName] = useState('Loading...')
-  const [listImages, setImages] = useState(null)
+  const [baseName, setBaseName] = useState("Loading...");
+  const [listImages, setImages] = useState(null);
   const navigate = useNavigate();
   const labelRef = useRef();
   const inputId = useId();
@@ -43,11 +41,15 @@ function SwapFace() {
   const searchParams = new URLSearchParams(location.search);
   const album_id = searchParams.get("album_id");
   const fetchImages = async () => {
-    const convertNumberAlbum = Number(album_id)
-    const { data } = await axios.get(`https://api.funface.online/get/list_image/1?album=${convertNumberAlbum === 23 ? convertNumberAlbum : convertNumberAlbum + 1}`)
-    setImages(data.list_sukien_video)
-    console.log(data)
-  }
+    const convertNumberAlbum = Number(album_id);
+    const { data } = await axios.get(
+      `https://api.funface.online/get/list_image/1?album=${
+        convertNumberAlbum === 23 ? convertNumberAlbum : convertNumberAlbum + 1
+      }`
+    );
+    setImages(data.list_sukien_video);
+    console.log(data);
+  };
   const handleInputChange = (e) => {
     try {
       const fileUploaded = e.target.files[0];
@@ -76,21 +78,18 @@ function SwapFace() {
 
       const imgUploadSrc = uploadResponse.data;
 
-      const swapResponse = await swapAlbumImages(album_id, imgUploadSrc, idUser);
+      const swapResponse = await swapAlbumImages(
+        album_id,
+        imgUploadSrc,
+        idUser
+      );
 
       if (!swapResponse) throw new Error("Swap face fail");
 
       const data = swapResponse.data;
 
-      setOriginalImg(
-        data.sukien_2_image.link_src_goc.replace(
-          "/var/www/build_futurelove/",
-          "https://futurelove.online/"
-        )
-      );
-      setListSrcTransfered(data["link anh da swap"]);
       setTransferedImgSrc(data.sukien_2_image.link_da_swap);
-      setIdEvent(data.sukien_2_image.id_all_sk)
+      setIdEvent(data.sukien_2_image.id_all_sk);
     } catch (error) {
       toast.error("Fail: " + error.message);
       console.log({ err: error.message });
@@ -105,24 +104,19 @@ function SwapFace() {
         `https://api.funface.online/get/list_image/1?album=${album_id}`
       );
 
-
-      console.log(response)
+      console.log(response);
       const images = response.data.list_sukien_video;
-      console.log('images', images);
+      console.log("images", images);
 
-      const baseImg = images.find(
-        (item) => {
-          return item.id === Number(id);
-        }
-      )?.image;
-      const baseName = images.find(
-        (item) => {
-          return item.id === Number(id);
-        }
-      )?.thongtin;
+      const baseImg = images.find((item) => {
+        return item.id === Number(id);
+      })?.image;
+      const baseName = images.find((item) => {
+        return item.id === Number(id);
+      })?.thongtin;
       if (!baseImg) throw new Error("Base image not found");
       if (!baseName) throw new Error("Base image not found");
-      setBaseName(baseName)
+      setBaseName(baseName);
       setTransferedImgSrc(baseImg);
     } catch (error) {
       toast.error("Can't find album to swap");
@@ -133,11 +127,11 @@ function SwapFace() {
 
   const handleClickViewAlbum = () => {
     if (idEvent) {
-      navigate(`/event/${idEvent}`)
+      navigate(`/event/${idEvent}`);
     } else {
-      toast.warning('You need swap image first!')
+      toast.warning("You need swap image first!");
     }
-  }
+  };
   useEffect(() => {
     getBaseImg();
     fetchImages();
@@ -147,7 +141,9 @@ function SwapFace() {
     <div className="mt-6">
       <div className="flex mb-4">
         <div className="bg-[#00403E] py-1.5 px-3 rounded-md">
-            <h3 className="text-[#CF3736] font-semibold text-xl">Swap Image &gt; {baseName}</h3>
+          <h3 className="text-[#CF3736] font-semibold text-xl">
+            Swap Image &gt; {baseName}
+          </h3>
         </div>
       </div>
       <label htmlFor={inputId} ref={labelRef} className="d-none" />
@@ -182,15 +178,23 @@ function SwapFace() {
               onClick={() => labelRef.current?.click()}
             >
               <img src={UploadImageIcon} alt="Upload" className="w-[50px]" />
-
             </div>
           )}
           <div className="h-[40px] mt-2 flex">
-            <input type="text" placeholder="Enter file name..." className="w-full border-[1px] border-[#CF3736] px-4" />
+            <input
+              type="text"
+              placeholder="Enter file name..."
+              className="w-full border-[1px] border-[#CF3736] px-4"
+            />
           </div>
         </div>
         <div>
-          <button className="bg-[#CF3736] text-white flex items-center rounded-md px-2 gap-2 py-1.5" onClick={handleUploadAndSwap}>Swap -1 <img src={coinIcon} className="w-4" alt="" /></button>
+          <button
+            className="bg-[#CF3736] text-white flex items-center rounded-md px-2 gap-2 py-1.5"
+            onClick={handleUploadAndSwap}
+          >
+            Swap -1 <img src={coinIcon} className="w-4" alt="" />
+          </button>
         </div>
         <div>
           <div className="flex flex-col items-center ">
@@ -200,17 +204,26 @@ function SwapFace() {
               height={320}
               className="min-h-[320px] max-h-[320px] max-w-[250px] min-w-[250px]  object-cover bg-white rounded-lg"
             />
-
           </div>
           <div className="h-[40px] mt-2 flex justify-center">
-            <button onClick={handleClickViewAlbum} className=" bg-[#CF3736] flex items-center px-4 text-white font-semibold rounded-md">View Album</button>
+            <button
+              onClick={handleClickViewAlbum}
+              className=" bg-[#CF3736] flex items-center px-4 text-white font-semibold rounded-md"
+            >
+              View Album
+            </button>
           </div>
         </div>
       </div>
       <div className="mt-8">
         <div className="flex items-center justify-between">
-          <Link to={'/swap-video'} className="bg-[#00403E] flex items-center rounded-md shadow-xl  px-2 py-1.5 gap-5">
-            <h3 className=" shadow-2xl rounded-md text-[#CF3736]  text-xl font-bold ">Suggestions for you</h3>
+          <Link
+            to={"/swap-video"}
+            className="bg-[#00403E] flex items-center rounded-md shadow-xl  px-2 py-1.5 gap-5"
+          >
+            <h3 className=" shadow-2xl rounded-md text-[#CF3736]  text-xl font-bold ">
+              Suggestions for you
+            </h3>
           </Link>
         </div>
         <div className="mb-12">
@@ -223,17 +236,27 @@ function SwapFace() {
             }}
             breakpoints={breakpoints}
           >
-            {listImages ? listImages.map((item, index) => {
-              return (
-                <SwiperSlide key={index} className="cursor-pointer">
-                  <ProductCard image={item.image} title={item.thongtin} link={`/swap-face/${item.id}?album_id=${item.IDCategories}`} />
-                </SwiperSlide>
-              );
-            }) : <>
-              <div className="h-[220px] flex justify-center items-center">
-                <p className="text-center text-xl text-[#CF3736]">Not found data</p>
-              </div>
-            </>}
+            {listImages ? (
+              listImages.map((item, index) => {
+                return (
+                  <SwiperSlide key={index} className="cursor-pointer">
+                    <ProductCard
+                      image={item.image}
+                      title={item.thongtin}
+                      link={`/swap-face/${item.id}?album_id=${item.IDCategories}`}
+                    />
+                  </SwiperSlide>
+                );
+              })
+            ) : (
+              <>
+                <div className="h-[220px] flex justify-center items-center">
+                  <p className="text-center text-xl text-[#CF3736]">
+                    Not found data
+                  </p>
+                </div>
+              </>
+            )}
           </Swiper>
         </div>
       </div>

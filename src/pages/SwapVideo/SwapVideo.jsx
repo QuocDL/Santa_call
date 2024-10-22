@@ -1,16 +1,13 @@
-import { useEffect, useId, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { deviceDetect } from "react-device-detect";
-import { saveAs } from "file-saver";
-import { toast } from "react-toastify";
-import NProgress from "nprogress";
-import coinIcon from "../../assets/image 2.png";
 import axios from "axios";
-
-import TransferIcon from "../../assets/TransferIcon.svg";
+import { saveAs } from "file-saver";
+import NProgress from "nprogress";
+import { useEffect, useId, useRef, useState } from "react";
+import { deviceDetect } from "react-device-detect";
+import { useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import coinIcon from "../../assets/image 2.png";
 import UploadImageIcon from "../../assets/UploadImageIcon.svg";
-import DirectLeftIcon from "../../assets/DirectLeftIcon.svg";
 
 const MAX_FILE_SIZE = 10485760;
 
@@ -19,20 +16,13 @@ function SwapVideo() {
   const [ipAddress, setIpAddress] = useState("");
   const [deviceRegister, setDeviceRegister] = useState("");
   const [file, setFile] = useState(null);
-  const [originalImg, setOriginalImg] = useState(null);
   const [uploadImgSrc, setUploadImgSrc] = useState(null);
   const [originalVideo, setOriginalVideo] = useState(null);
   const [transferedVideo, setTransferedVideo] = useState(null);
-
-
   const navigate = useNavigate();
-  const location = useLocation();
   const labelRef = useRef();
   const inputId = useId();
-
   const { id } = useParams();
-  const searchParams = new URLSearchParams(location.search);
-  const album_id = searchParams.get("album_id");
 
   const handleInputChange = (e) => {
     try {
@@ -76,14 +66,6 @@ function SwapVideo() {
         throw new Error("Swap face fail");
 
       const data = swapResponse.data.sukien_video;
-
-      setOriginalImg(
-        data.linkimg?.replace(
-          "/var/www/build_futurelove/",
-          "https://photo.gachmen.org/"
-        )
-      );
-
       setTransferedVideo(data.link_vid_swap);
     } catch (error) {
       toast.error("Fail: " + error.message);
@@ -222,7 +204,7 @@ function SwapVideo() {
             )}
           </div>
           <div className="h-[40px] mt-2 flex justify-center">
-            <button className=" bg-[#CF3736] flex items-center px-4 text-white font-semibold rounded-md">Download</button>
+            <button className=" bg-[#CF3736] flex items-center px-4 text-white font-semibold rounded-md" onClick={handleDownloadVideo}>Download</button>
           </div>
         </div>
       </div>
