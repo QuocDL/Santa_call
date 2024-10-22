@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { apiAuth } from '../../utils/axiosConfig'
 import NProgress from "nprogress";
 import JSZip from "jszip";
@@ -102,9 +102,11 @@ export default function ListImageDetail() {
       return displayedPages;
    };
    return (
-    
       <> 
-          <button className="bg-[#CF3736] text-white flex items-center rounded-md px-2 gap-2 py-1.5 mt-6" onClick={handleDownloadAllImages}>Download all</button>
+        <div className='flex gap-4'>
+        <button className="bg-[#CF3736] text-white flex items-center rounded-md px-2 gap-2 py-1.5 mt-6" onClick={handleDownloadAllImages}>Download all</button>
+        <Link to={'/swap-face'} className="bg-[#CF3736] text-white flex items-center rounded-md px-2 gap-2 py-1.5 mt-6" >Swap more</Link>
+        </div>
       
        <div className='flex flex-wrap gap-5 mb-8 mt-4'>
          {eventList && eventList.items.map((item, index) => {

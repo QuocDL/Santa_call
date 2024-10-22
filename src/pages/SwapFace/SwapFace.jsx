@@ -19,6 +19,7 @@ function SwapFace() {
   const [uploadImgSrc, setUploadImgSrc] = useState(null);
   const [transferedImgSrc, setTransferedImgSrc] = useState(null);
   const [listSrcTransfered, setListSrcTransfered] = useState([]);
+  const [baseName, setBaseName] = useState('Loading...')
   const [listImages, setImages] = useState(null)
   const navigate = useNavigate();
   const labelRef = useRef();
@@ -114,10 +115,14 @@ function SwapFace() {
           return item.id === Number(id);
         }
       )?.image;
-
-      console.log('baseImg', baseImg);
+      const baseName = images.find(
+        (item) => {
+          return item.id === Number(id);
+        }
+      )?.thongtin;
       if (!baseImg) throw new Error("Base image not found");
-
+      if (!baseName) throw new Error("Base image not found");
+      setBaseName(baseName)
       setTransferedImgSrc(baseImg);
     } catch (error) {
       toast.error("Can't find album to swap");
@@ -136,10 +141,15 @@ function SwapFace() {
   useEffect(() => {
     getBaseImg();
     fetchImages();
-  }, []);
+  }, [id]);
 
   return (
     <div className="mt-6">
+      <div className="flex mb-4">
+        <div className="bg-[#00403E] py-1.5 px-3 rounded-md">
+            <h3 className="text-[#CF3736] font-semibold text-xl">Swap Image &gt; {baseName}</h3>
+        </div>
+      </div>
       <label htmlFor={inputId} ref={labelRef} className="d-none" />
       <input
         id={inputId}
