@@ -155,7 +155,7 @@ function SwapFace() {
         accept="image/*"
         onChange={handleInputChange}
       />
-      <div className="flex justify-center w-[85%] items-center gap-5 ">
+      <div className="flex flex-col md:flex-row justify-center w-[85%] items-center gap-5 ">
         <div>
           {uploadImgSrc ? (
             <div className="flex flex-col items-center relative group">

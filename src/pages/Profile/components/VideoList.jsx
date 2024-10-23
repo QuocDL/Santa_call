@@ -8,17 +8,17 @@ import { apiAuth } from "../../../utils/axiosConfig";
 import { useSelector } from "react-redux";
 import VideoModal from "./VideoModal";
 function paginateData(data, page, itemsPerPage) {
-    const reversedData = data.reverse();
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedData = reversedData.slice(startIndex, endIndex);
-  
-    return {
-      currentPage: page,
-      totalPages: Math.ceil(reversedData.length / itemsPerPage),
-      items: paginatedData,
-    };
-  }
+  const reversedData = data.reverse();
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = reversedData.slice(startIndex, endIndex);
+
+  return {
+    currentPage: page,
+    totalPages: Math.ceil(reversedData.length / itemsPerPage),
+    items: paginatedData,
+  };
+}
 export default function VideoList() {
   const [openVideoModal, setOpenVideoModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -108,7 +108,7 @@ export default function VideoList() {
   return (
     <>
       <div className="flex flex-wrap justify-around gap-5 w-full ">
-        {videos &&
+        {videos ?
           videos.items.map((item) => (
             <div key={item.id_saved} className="relative ">
               <img
@@ -138,7 +138,10 @@ export default function VideoList() {
                 <img src={PlayIcon} alt="" />
               </button>
             </div>
-          ))}
+          )) : <>
+            <div className="flex justify-center w-full h-full">
+              <p className="text-red-500 text-xl font-medium">Not found data</p>
+            </div></>}
       </div>
       {videos && videos.totalPages > 1 && (
         <div className="flex justify-center w-full mt-4">
@@ -153,9 +156,8 @@ export default function VideoList() {
             <button
               key={index}
               onClick={() => handlePageChange(page)}
-              className={`w-10 text-[#00403E] ${
-                currentPage === page ? "bg-[#CF3736]" : "bg-white"
-              } mx-1 font-medium text-xl rounded-full`}
+              className={`w-10 text-[#00403E] ${currentPage === page ? "bg-[#CF3736]" : "bg-white"
+                } mx-1 font-medium text-xl rounded-full`}
             >
               {page}
             </button>
