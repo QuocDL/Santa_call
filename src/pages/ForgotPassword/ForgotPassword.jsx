@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 import { resetPassword } from "../../services/auth.service";
 import SantaClaus from "../../assets/santa-claus.png";
-import BgAuth from "../../assets/bg-auth.png";
+import BgAuth from "../../assets/nen2-100.png";
 import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
@@ -47,9 +47,7 @@ function ForgotPassword() {
           className="absolute h-full w-full object-contain sm:object-cover top-0 object-top"
         />
         <div className="relative flex items-center max-md:flex-col">
-          <div>
-            <img loading="lazy" srcSet={SantaClaus} />
-          </div>
+          
           <div>
             <div className="bg-white flex flex-col p-5 rounded-xl">
               <div className="text-gray-900 text-3xl font-semibold">
