@@ -85,8 +85,8 @@ export default function SideBar() {
             name={'Setting'}
             activeIcon={SettingIconActive}
             isOpen={isOpen}
-            to={'/settings'}
-            isActive={!!currentPath.includes("/settings")}
+            to={'/setting'}
+            isActive={!!currentPath.includes("/setting")}
           />
         </div>
       </div>

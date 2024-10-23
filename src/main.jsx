@@ -25,6 +25,7 @@ import "./index.css";
 import ListImageDetail from "./pages/Events/ListImageDetail.jsx";
 import Home from "./pages/Home/Home.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
+import Setting from "./pages/SettingPage/Setting.jsx";
 
 NProgress.configure({
   showSpinner: false,
@@ -47,6 +48,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/swap-face/:id" element={<PrivateRoute><SwapFace /></PrivateRoute>} />
                 <Route path="/swap-video/:id" element={<PrivateRoute><SwapVideo /></PrivateRoute>} />
                 <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                <Route path="/setting" element={<PrivateRoute><Setting /></PrivateRoute>} />
             </Route>
 
             {/* Route sign in */}

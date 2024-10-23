@@ -16,6 +16,8 @@ import notificationIcon from "../../assets/NotificationIcon.svg";
 import SearchIcon from "../../assets/searchIcon.png";
 import { doLogout } from "../../redux/action/userAction";
 import MenuBarBlock from "../SideBar/_components/MenuIcon";
+import LogOutIcon from "../../assets/mdi_logout.png";
+import ViewProfileIcon from "../../assets/ViewProfileIcon.png";
 
 export default function MenuBar() {
   const [searchKey, setSearchKey] = useState("");
@@ -45,7 +47,7 @@ export default function MenuBar() {
         <div className="flex items-center">
           <MenuBarBlock />
           <div className="bg-[#00403E] py-1.5 px-4 rounded-md">
-              <h3 className="text-[#CF3736] text-xl font-bold">Edit Profile</h3>
+            <h3 className="text-[#CF3736] text-xl font-bold">Edit Profile</h3>
           </div>
         </div>
         <div className="flex items-center gap-5">
@@ -72,21 +74,23 @@ export default function MenuBar() {
             <img src={increaseIcon} alt="" className="w-4" />
           </button>
         </div>
-        <div className="search relative">
-          <img
-            src={SearchIcon}
-            alt="Search"
-            className="absolute border-r-[1px] border-[#CF3736] top-1 w-8 left-1 cursor-pointer"
-            onClick={() => handleSearch()}
-          />
-          <input
-            type="text"
-            placeholder="Search or type"
-            value={searchKey}
-            className="placeholder-gray-400 placeholder-opacity-75 text-xs sm:text-sm w-[40vw] h-[40px] pl-[45px] pt-[3px] pb-[3px] text-red-400 rounded-lg outline-none"
-            onChange={(event) => setSearchKey(event.target.value)}
-          />
-        </div>
+        {location.pathname.includes('/setting') ? <></> :
+          <> <div className="search relative">
+            <img
+              src={SearchIcon}
+              alt="Search"
+              className="absolute border-r-[1px] border-[#CF3736] top-1 w-8 left-1 cursor-pointer"
+              onClick={() => handleSearch()}
+            />
+            <input
+              type="text"
+              placeholder="Search or type"
+              value={searchKey}
+              className="placeholder-gray-400 placeholder-opacity-75 text-xs sm:text-sm w-[40vw] h-[40px] pl-[45px] pt-[3px] pb-[3px] text-red-400 rounded-lg outline-none"
+              onChange={(event) => setSearchKey(event.target.value)}
+            />
+          </div></>
+        }
         <div className="lg:ml-16 ml-4">
           <img
             src={notificationIcon}
@@ -104,9 +108,9 @@ export default function MenuBar() {
                     className="cursor-pointer rounded-full overflow-hidden h-[40px] w-[40px] sm:h-[50px] sm:w-[50px]"
                   />
                 </MenuHandler>
-                <MenuList className="flex flex-col gap-2 items-center w-[150px] z-50">
-                    <Link to={"/profile"}>Profile</Link>
-                    <button onClick={handleLogout}>Log out</button>
+                <MenuList className="flex flex-col gap-2 items-center w-[150px] border-none bg-[#00403E] z-50">
+                  <Link to={"/profile"} className="bg-[#CF3736] flex items-center justify-center gap-2 h-[40px] w-full rounded-md text-white"><img src={ViewProfileIcon} alt="" /> Profile</Link>
+                  <button onClick={handleLogout} className="bg-[#CF3736] flex items-center justify-center gap-2 h-[40px] w-full rounded-md text-white"><img src={LogOutIcon} alt="" /> Log out</button>
                 </MenuList>
               </Menu>
             ) : (

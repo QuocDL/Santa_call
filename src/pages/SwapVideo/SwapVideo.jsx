@@ -8,9 +8,25 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import coinIcon from "../../assets/image 2.png";
 import UploadImageIcon from "../../assets/UploadImageIcon.svg";
+import { apiAuth } from "../../utils/axiosConfig";
+import { Swiper, SwiperSlide } from "swiper/react";
+import ProductCard from "../../components/ProductCard/ProductCard";
 
 const MAX_FILE_SIZE = 10485760;
-
+const breakpoints = {
+  1024: {
+    slidesPerView: 3,
+    spaceBetween: 30,
+  },
+  1280: {
+    slidesPerView: 4,
+    spaceBetween: 40,
+  },
+  1536: {
+    slidesPerView: 4,
+    spaceBetween: 50,
+  },
+};
 function SwapVideo() {
   const account = useSelector((state) => state.user.account);
   const [ipAddress, setIpAddress] = useState("");
@@ -19,6 +35,7 @@ function SwapVideo() {
   const [uploadImgSrc, setUploadImgSrc] = useState(null);
   const [originalVideo, setOriginalVideo] = useState(null);
   const [transferedVideo, setTransferedVideo] = useState(null);
+  const [listVideos, setListVideos] = useState()
   const navigate = useNavigate();
   const labelRef = useRef();
   const inputId = useId();
@@ -112,10 +129,15 @@ function SwapVideo() {
       setDeviceRegister("Desktop");
     }
   };
+  const fetchSuggest = async()=>{
+    const {data} = await apiAuth.get(`https://api.funface.online/get/list_video/all_santa/15?page=6`)
+    setListVideos(data.list_sukien_video)
+    console.log(data)
+  }
 
   useEffect(() => {
     NProgress.start();
-
+    fetchSuggest()
     getBaseVid();
     fetchIpAddress();
     fetchDeviceDetect();
@@ -215,7 +237,7 @@ function SwapVideo() {
           </Link>
         </div>
         <div className="mb-12">
-          {/* <Swiper
+          <Swiper
           className="mt-6"
           slidesPerView={1}
           spaceBetween={20}
@@ -224,10 +246,10 @@ function SwapVideo() {
           }}
           breakpoints={breakpoints}
         >
-          {listImages ? listImages.map((item, index) => {
+          {listVideos ? listVideos.map((item, index) => {
             return (
               <SwiperSlide key={index} className="cursor-pointer">
-                <ProductCard image={item.image} title={item.thongtin} link={`/swap-face/${item.id}?album_id=${item.IDCategories}`} />
+                <ProductCard image={item.IDCategories} title={item.thongtin} link={`/swap-video/${item.id}`} />
               </SwiperSlide>
             );
           }) : <>
@@ -235,7 +257,7 @@ function SwapVideo() {
               <p className="text-center text-xl text-[#CF3736]">Not found data</p>
             </div>
           </>}
-        </Swiper> */}
+        </Swiper>
         </div>
       </div>
     </div>

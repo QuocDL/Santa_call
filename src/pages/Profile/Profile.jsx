@@ -15,6 +15,7 @@ import { uploadImg } from "../../services/swap.service";
 import { changeAvatar } from "../../services/user.service";
 import VideoList from "./components/VideoList";
 import ImagesList from "./components/ImagesList";
+import { Menu, MenuHandler, MenuList } from "@material-tailwind/react";
 
 const MAX_FILE_SIZE = 10485760;
 
@@ -206,16 +207,24 @@ function Profile() {
           <div className="bg-[#CF3736] ">
             <div className=" py-2 flex justify-between items-center px-6 text-white">
               <h3 className="text-xl font-medium ">Products</h3>
-              <button onClick={demoHandleFilter}>
-                {" "}
-                <img src={FilterIcon} alt="" />
-              </button>
+              <Menu>
+                <MenuHandler className="mr-4 cursor-pointer border-none">
+                  <img
+                    src={FilterIcon}
+                    className="cursor-pointer rounded-full overflow-hidden "
+                  />
+                </MenuHandler>
+                <MenuList className="flex flex-col gap-2 items-center w-[130px] border-none z-50">
+                  <button onClick={()=> setSelect('images')}  className={` h-[40px] w-full rounded-md ${select === 'images' ? 'bg-[#CF3736]  text-white' : ' text-[#CF3736]'}`}>All images</button>
+                  <button onClick={()=> setSelect('videos')} className={` h-[40px] w-full rounded-md ${select === 'videos' ? 'bg-[#CF3736]  text-white' : ' text-[#CF3736]'}`}>All Videos</button>
+                </MenuList>
+              </Menu>
             </div>
-            <div className=" bg-white pt-3 px-4">
+            <div className=" bg-white pt-3 min-h-[650px] px-4">
               <h3 className="mb-3 text-xl font-bold">All {select}</h3>
               {select === "images" ? (
                 <>
-                  <ImagesList/>
+                  <ImagesList />
                 </>
               ) : (
                 <>
